@@ -1,5 +1,5 @@
 // Name:  Jared Peter-Contesse & Spencer Shaw
-// Lab 2 Part 1
+// Lab 3 Part 1
 // Description: 
 
 #include <stdio.h>
@@ -8,6 +8,7 @@
 #include "delay.h"
 #include "hardware.h"
 #include "prop.h"
+#include "neural.h"
 
 // Settings
 #define DELAY_MS 100 // Delay time for loop
@@ -16,23 +17,19 @@
 
 int main(void)
 {
-    u08 light_left;
-    u08 light_right;
-    struct motor_command motors;
+    line_sensor_data line_data;
+    motor_command motors;
 
     init();
     set_motors(0, 0);
 
     while (1)   
     {
-
-    	light_left = poll_analog_pin(LINE_SENSOR_LEFT);
-    	light_right = poll_analog_pin(LINE_SENSOR_RIGHT);
-
-        motors = compute_proportional(light_left, light_right)
+    	line_data = read_line_sensor();
+        motors = compute_proportional(line_data.left, line_data.right);
         set_motors(motors.left, motors.right);
 
-        print_4(light_left, motors.left, light_right, motors);
+        print_4(line_data.left, motors.left, line_data.right, motors.right);
         delay_ms(DELAY_MS);
     }
 

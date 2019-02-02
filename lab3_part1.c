@@ -14,6 +14,7 @@
 #define DELTA_INIT 4 // Braitenberg mode
 
 
+
 int main(void)
 {
     u08 light_left;

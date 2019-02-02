@@ -15,6 +15,7 @@
 #define DELTA_INIT 4 // Braitenberg mode
 
 
+
 int main(void)
 {
     line_sensor_data line_data;

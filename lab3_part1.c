@@ -7,7 +7,9 @@
 // Custum delay lib
 #include "delay.h"
 #include "hardware.h"
+#include "line_follow_pid.h"
 #include "prop.h"
+
 
 // Settings
 #define DELAY_MS 100 // Delay time for loop

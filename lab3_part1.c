@@ -12,9 +12,6 @@
 
 // Settings
 #define DELAY_MS 100 // Delay time for loop
-#define DELTA_INIT 4 // Braitenberg mode
-
-
 
 int main(void)
 {

@@ -1,9 +1,10 @@
 #ifndef HARDWARE_H
 #define HARDWARE_H
 
-#include "globals.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+
+#include "globals.h"
 
 #define U08_MIN 0
 #define U08_MAX 255
@@ -71,6 +72,7 @@ line_sensor_data_t read_line_sensor(){
     line_sensor_data_t data;
     data.left = analog(LINE_SENSOR_LEFT);
     data.right = analog(LINE_SENSOR_RIGHT);
+    return data;
 }
 
 void motor(u08 num, int speed){

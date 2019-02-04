@@ -1,7 +1,7 @@
 // Description: PID Controller
 
-#ifndef LINE_FOLLOW_PID
-#define LINE_FOLLOW_PID
+#ifndef LINE_FOLLOW_PID_H
+#define LINE_FOLLOW_PID_H
 
 #include <stdio.h>
 
@@ -87,7 +87,6 @@ int *pid_control(pid *_pid, int *sensor){
 void print_pid(struct pid _pid){
 	print_4(_pid.error[0], _pid.p_term, _pid.i_term, _pid.d_term);
 }
-
 
 #endif
 

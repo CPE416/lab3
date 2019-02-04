@@ -247,7 +247,7 @@ void i2c_regwrite(u08 dev_addr, u08 address, u08 data) {
 }
 
 u08 i2c_regread(u08 dev_addr, u08 address) {
-   u08 temp;
+   u08 temp = 0;
    send_address(dev_addr, address,1);
    read_register(dev_addr, &temp,1);
    return temp;

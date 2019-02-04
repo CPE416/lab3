@@ -56,7 +56,7 @@ program_linux: main.elf
 
 clean:
 	rm -fr *.elf *.hex *.o
-	rm -f dev.txt net_test
+	rm -f dev.txt net_test net_test.txt
 
 # New stuff
 
@@ -85,7 +85,10 @@ net: clean
 	gcc $(CFLAGS) -g -o net_test net_test.c -lm
 
 run_net: net
-	./net_test
+	time ./net_test
+
+pipe_net: net
+	time ./net_test > net_test.csv
 
 prep:
 	avr-objcopy -O ihex main.elf main.hex

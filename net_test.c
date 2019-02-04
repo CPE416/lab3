@@ -9,35 +9,43 @@
 #define TRUE 1 
 #define FALSE 0
 
-line_sensor_data_t line_data;
-
-void increment_line_data();
+void print_outputs(net_outputs_t outputs);
 
 int main(void)
 {
-    // printf("Starting test\n");
-    // u08 exit = FALSE;
-    motor_command_t motors;
-    motors.left = 255;
-    motors.right = 0;
-
+    const float delta = 1.0 / 255.0;
+    float inputs[2] = {0.0, 0.0};
     neural_net_t net;
     init_net(&net);
-    // printf("Initialized\n");
-    // while (!exit){
-    	increment_line_data();
-        // printf("Starting inference\n");
-        motors = compute_neural_network(line_data, net);
-        // printf("Line: %d, %d\tmotors: %d, %d\n", line_data.left, line_data.right, motors.left, motors.right);
-        // exit = TRUE;
-    // }
+    net_outputs_t outputs;
+
+    printf("input[0], input[1], output[0], output[1]\n");
+    while (inputs[0] <= 1){
+        while(inputs[1] <= 1){
+            // printf("Starting inference\n");
+            infer_net(inputs, net, &outputs);
+            print_outputs(outputs);
+            printf("%6.5f, %6.5f, %6.5f, %6.5f\n", inputs[0], inputs[1], outputs.output[0], outputs.output[1]);
+            inputs[1] += delta;
+        }
+        inputs[1] = 0;
+        inputs[0] += delta;
+    }
     return 0;
 }
 
-void increment_line_data(){
-    if(line_data.left == 255){
-        line_data.right += 1;
+void print_outputs(net_outputs_t outputs){
+    printf("\n input: ");
+    for (int i = 0; i < INPUT_NODES; i++){
+        printf("%6.5f, ", outputs.input[i]);
     }
-    line_data.left += 1;
-    // printf("Line data: %d, %d\n", line_data.left, line_data.right);
+    printf("\n hidden: ");
+    for (int i = 0; i < HIDDEN_NODES; i++){
+        printf("%6.5f, ", outputs.hidden[i]);
+    }
+    printf("\n");
+    // printf("\n output: ");
+    // for (int i = 0; i < OUTPUT_NODES; i++){
+    //     printf("%6.5f, ", outputs.output[i]);
+    // }
 }

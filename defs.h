@@ -46,7 +46,7 @@ typedef struct line_sensor_data{
     u08 right;
 }line_sensor_data_t;
 
-float square(float x){
+float pow2(float x){
     return x * x;
 }
 

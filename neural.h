@@ -83,22 +83,19 @@ float sigmoid(float x){
     // http://www.ece.utep.edu/research/webfuzzy/docs/kk-thesis/kk-thesis-html/node72.html
     return 1 / (1 + exp((double) - x));
     // // Accurate approximation of sigmoid
-    // return 1/(1 + pow(0.3678749025, x));
+    return 1/(1 + pow(0.3678749025, x));
     // // Alternate, might be faster on avr
-    // return (tanh(x) + 1) / 2;
+    return (tanh(x) + 1) / 2;
 }
 
 // Infer the output of an input layer
 // input should be of size INPUT_NODES
 // output should be of size INPUT_NODES
 void infer_input_layer(float *input, input_layer_t layer, float *output){
-    u08 index = 0;
-    while(index < INPUT_NODES){
+    for(u08 index = 0; index < INPUT_NODES; index++){
         output[index] = input[index] - layer.bias[index];
         output[index] = sigmoid(output[index]);
     }
-
-    // TODO: Finish/correct calculations on this node
 }
 
 // // Infer the output of an abitrary (non-input) layer.
@@ -181,8 +178,8 @@ void train_net(neural_net_t *net, line_sensor_data_t line_data){
     net_output.left = (u08) (net_outputs.output[0] * 100);
     net_output.right = (u08) (net_outputs.output[1] * 100);
 
-    float error = square(target_output.left - net_output.left) +
-                  square(target_output.right - net_output.right);
+    float error = pow2(target_output.left - net_output.left) +
+                  pow2(target_output.right - net_output.right);
     error = error * 0.5;
 
     // TODO: Complete implemention of training

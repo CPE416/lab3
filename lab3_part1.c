@@ -9,7 +9,6 @@
 #include "hardware.h"
 #include "line_follow_pid.h"
 #include "prop.h"
-#include "neural.h"
 
 
 // Settings
@@ -17,17 +16,18 @@
 
 int main(void)
 {
-    line_sensor_data line_data;
-    motor_command motors;
-
     init();
-    set_motors(0, 0);
+    line_sensor_data_t line_data;
+    motor_command_t motors;
+    motors.left = 0;
+    motors.right = 0;
+    set_motors(motors);
 
     while (1)   
     {
     	line_data = read_line_sensor();
         motors = compute_proportional(line_data.left, line_data.right);
-        set_motors(motors.left, motors.right);
+        set_motors(motors);
 
         print_4(line_data.left, motors.left, line_data.right, motors.right);
         delay_ms(DELAY_MS);

@@ -35,17 +35,17 @@
 typedef struct motor_command{
     u08 left;
     u08 right;
-}motor_command;
+}motor_command_t;
 
 typedef struct light_data{
     u08 left;
     u08 right;
-}light_data;
+}light_data_t;
 
 typedef struct line_sensor_data{
     u08 left;
     u08 right;
-}line_sensor_data;
+}line_sensor_data_t;
 
 // Functions for external LEDs on digital pins
 void init_led(u08 num){
@@ -60,15 +60,15 @@ void led_low(u08 num){
 	digital_out(num, 0);
 }
 
-light_data read_light_sensor(){
-    light_data data;
+light_data_t read_light_sensor(){
+    light_data_t data;
     data.left = analog(LIGHT_SENSOR_PIN_LEFT);
     data.right = analog(LIGHT_SENSOR_PIN_RIGHT);
     return data;
 }
 
-line_sensor_data read_line_sensor(){
-    line_sensor_data data;
+line_sensor_data_t read_line_sensor(){
+    line_sensor_data_t data;
     data.left = analog(LINE_SENSOR_LEFT);
     data.right = analog(LINE_SENSOR_RIGHT);
 }
@@ -81,9 +81,9 @@ void motor(u08 num, int speed){
     }
 }
 
-void set_motors(int left, int right){
-    motor(MOTOR_LEFT, left);
-    motor(MOTOR_RIGHT, right);
+void set_motors(motor_command_t motors){
+    set_servo(MOTOR_LEFT, ( motors.left * 0.3333 ) + 127);
+    set_servo(MOTOR_RIGHT, ((0 - motors.right) * 0.3333 ) + 127);
 }
 
 u08 poll_analog_pin(u08 pin_num){

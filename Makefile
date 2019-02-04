@@ -14,6 +14,9 @@
 # 	(Do this on the server)
 # 	make handin
 
+CC = avr-gcc
+CFLAGS = -Wall -mmcu=atmega645a -O2 -pipe
+
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 BOARD_LIB = $(SELF_DIR)/library
 SOURCE_LIB = $(wildcard $(BOARD_LIB)/*.c)
@@ -24,21 +27,21 @@ LINUX_DEVICE = /dev/ttyACM1
 UNAME := $(shell uname -s)
 LINUX = Linux
 
-HANDIN_FILES = lab2_part1.c lab2_part2.c lab2_part3.c lab2_part4.c delay.h hardware.h Makefile
+HANDIN_FILES = *.c *.h Makefile
 
 sample: sample.c $(wildcard $(BOARD_LIB)/*.c)
-	avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -Wall -mmcu=atmega645a -O2 -o main.elf sample.c $(wildcard $(BOARD_LIB)/*.c)
+	$(CC) -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) $(CFLAGS) -o main.elf sample.c $(wildcard $(BOARD_LIB)/*.c)
 	avr-objcopy -O ihex main.elf main.hex
 	avr-size main.elf
 
 test: test.c $(wildcard $(BOARD_LIB)/*.c)
-	avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -Wall -mmcu=atmega645a -O2 -o main.elf test.c $(wildcard $(BOARD_LIB)/*.c)
+	$(CC) -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) $(CFLAGS) -o main.elf test.c $(wildcard $(BOARD_LIB)/*.c)
 	avr-objcopy -O ihex main.elf main.hex
 	avr-size main.elf
 
 lib: $(wildcard $(BOARD_LIB)/*.c)
 	$(foreach var,$(SOURCE_LIB), \
-        avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -Wall -mmcu=atmega645a -O2 -c -o $(var:.c=.o) $(var); )
+        avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) $(CFLAGS) -c -o $(var:.c=.o) $(var); )
 
 program_windows: 
 	avrdude -F -pm645 -Pcom4 -carduino -u -U flash:w:main.hex
@@ -56,25 +59,25 @@ clean:
 
 # New stuff
 
-part1: lab2_part1.c $(wildcard $(BOARD_LIB)/*.c)
-	avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -Wall -mmcu=atmega645a -O2 -o main.elf lab2_part1.c $(wildcard $(BOARD_LIB)/*.c)
+part1: lab3_part1.c $(wildcard $(BOARD_LIB)/*.c)
+	$(CC) -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) $(CFLAGS) -o main.elf lab3_part1.c $(wildcard $(BOARD_LIB)/*.c)
 	make prep
 
-part2: lab2_part2.c $(wildcard $(BOARD_LIB)/*.c)
-	avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -Wall -mmcu=atmega645a -O2 -o main.elf lab2_part2.c $(wildcard $(BOARD_LIB)/*.c)
+part2: lab3_part2.c $(wildcard $(BOARD_LIB)/*.c)
+	$(CC) -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) $(CFLAGS) -o main.elf lab3_part2.c $(wildcard $(BOARD_LIB)/*.c)
 	make prep
 
 
-part3: lab2_part3.c $(wildcard $(BOARD_LIB)/*.c)
-	avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -Wall -mmcu=atmega645a -O2 -o main.elf lab2_part3.c $(wildcard $(BOARD_LIB)/*.c)
+part3: lab3_part3.c $(wildcard $(BOARD_LIB)/*.c)
+	$(CC) -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) $(CFLAGS) -o main.elf lab3_part3.c $(wildcard $(BOARD_LIB)/*.c)
 	make prep
 
-part4: lab2_part4.c $(wildcard $(BOARD_LIB)/*.c)
-	avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -Wall -mmcu=atmega645a -O2 -o main.elf lab2_part4.c $(wildcard $(BOARD_LIB)/*.c)
+part4: lab3_part4.c $(wildcard $(BOARD_LIB)/*.c)
+	$(CC) -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) $(CFLAGS) -o main.elf lab3_part4.c $(wildcard $(BOARD_LIB)/*.c)
 	make prep
 
 test_hardware: test_hardware.c $(wildcard $(BOARD_LIB)/*.c)
-	avr-gcc -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -Wall -mmcu=atmega645a -O2 -o main.elf test_hardware.c $(wildcard $(BOARD_LIB)/*.c)
+	$(CC) -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) $(CFLAGS) -O2 -o main.elf test_hardware.c $(wildcard $(BOARD_LIB)/*.c)
 	make prep
 
 prep:
@@ -99,8 +102,8 @@ find_usb:
 	ls /dev | diff - dev.txt
 
 handin: $(HANDIN_FILES)
-	handin jseng CPE416_lab2 $(HANDIN_FILES)
-	handin jseng CPE416_lab2
+	handin jseng CPE416_lab3 $(HANDIN_FILES)
+	handin jseng CPE416_lab3
 	
 git:
 	git add .

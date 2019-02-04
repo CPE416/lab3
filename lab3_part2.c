@@ -14,10 +14,8 @@
 // Settings
 #define DELAY_MS 100 // Delay time for loop
 
-#define PROP 1 
-#define NEURAL 0
-
-#define DEAD_ZONE 200
+#define MODE_PROP 1 
+#define MODE_NEURAL 0
 
 u08 set_mode(u08 mode);
 
@@ -30,8 +28,7 @@ int main(void)
     motors.right = 0;
     set_motors(motors);
 
-    while (1)   
-    {
+    while (1){
     	line_data = read_line_sensor();
         motors = compute_proportional(line_data.left, line_data.right);
         set_motors(motors);
@@ -46,17 +43,17 @@ int main(void)
 u08 set_mode(u08 mode){
     u08 pressed = get_btn();
     if(pressed){
-        if (mode == PROP)
-            mode = NEURAL;
+        if (mode == MODE_PROP)
+            mode = MODE_NEURAL;
         else 
-            mode = PROP;
+            mode = MODE_PROP;
     }
-    switch (mode ){
-        case PROP:
+    switch (mode){
+        case MODE_PROP:
             led_off(1);
             led_on(0);
             break;
-        case NEURAL:
+        case MODE_NEURAL:
             led_off(0);
             led_on(1);
             break;

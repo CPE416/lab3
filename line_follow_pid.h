@@ -25,6 +25,28 @@ typedef struct pid
    u08 d_term;
 }pid;
 
+//Inserts most recent term and removes last term
+void insert_error(pid *_pid, int _error){
+	u08 i = HISTORY_LENGTH - 2;
+	while(i < HISTORY_LENGTH - 1){
+		_pid->error[i] = _pid->error[i+1];
+		i--;
+	}
+	_pid->error[0] = _error;
+}
+
+//Calculates the derivative term based off past error values
+int calc_derivative(pid *_pid){
+	int derivative = 0;
+	u08 i = HISTORY_LENGTH - 1;
+	while(i < HISTORY_LENGTH - 1){
+		derivative += _pid->error[i];
+		i--;
+	}
+	derivative = derivative / HISTORY_LENGTH;
+	return derivative;
+}
+
 // Takes in a PID struct, and a tuple of sensor values 
 // sensor[0] = right, sensor[1] = left
 // and returns motor values
@@ -61,32 +83,11 @@ int *pid_control(pid *_pid, int *sensor){
 	return sensor;
 }
 
-//Inserts most recent term and removes last term
-void insert_error(pid *_pid, int _error){
-	u08 i = HISTORY_LENGTH - 2;
-	while(i < HISTORY_LENGTH - 1){
-		_pid->error[i] = _pid->error[i+1];
-		i--;
-	}
-	_pid->error[0] = _error;
-}
-
 // Prints some values from a PID struct to the LCD
 void print_pid(struct pid _pid){
 	print_4(_pid.error[0], _pid.p_term, _pid.i_term, _pid.d_term);
 }
 
-//Calculates the derivative term based off past error values
-int calc_derivative(pid *_pid){
-	int derivative = 0;
-	u08 i = HISTORY_LENGTH - 1;
-	while(i < HISTORY_LENGTH - 1){
-		derivative += _pid->error[i];
-		i--;
-	}
-	derivative = derivative / HISTORY_LENGTH;
-	return derivative;
-}
 
 #endif
 

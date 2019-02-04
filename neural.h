@@ -14,12 +14,12 @@ typedef struct input_layer{
 }input_layer_t;
 
 typedef struct hidden_layer{
-    float weights[INPUT_NODES][HIDDEN_NODES];
+    float weights[HIDDEN_NODES][INPUT_NODES];
     float bias[HIDDEN_NODES];
 }hidden_layer_t;
 
 typedef struct output_layer{
-    float weights[HIDDEN_NODES][OUTPUT_NODES];
+    float weights[OUTPUT_NODES][HIDDEN_NODES];
     float bias[OUTPUT_NODES];
 }output_layer_t;
 
@@ -78,8 +78,6 @@ void infer_net(line_sensor_data_t line_data, neural_net_t net, net_output_t *out
     input.left = line_data.left;
     input.right = line_data.right;
 
-    net_output_t output;
-
     float input_layer_output[INPUT_NODES] = INPUT_LAYER_OUTPUT_EMPTY;
     infer_input_layer(input, net.input_layer, input_layer_output);
 
@@ -94,18 +92,18 @@ void infer_net(line_sensor_data_t line_data, neural_net_t net, net_output_t *out
     return;
 }
 
-neural_net_t train_net(neural_net_t net, line_sensor_data_t line_data, motor_command motor_data){
+neural_net_t train_net(neural_net_t net, line_sensor_data_t line_data, motor_command_t motor_data){
     
     // TODO: Implement training
     
     return net;
 }
 
-motor_command compute_neural(line_sensor_data_t line_data, neural_net_t net){
+motor_command_t compute_neural(line_sensor_data_t line_data, neural_net_t net){
     net_output_t net_output;
     infer_net(line_data, net, &net_output);
 
-    motor_command motor_data;
+    motor_command_t motor_data;
     motor_data.left = (u08)(net_output.left * 100);
     motor_data.right = (u08)(net_output.right * 100);
 

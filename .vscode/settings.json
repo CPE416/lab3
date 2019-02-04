@@ -1,2 +1,7 @@
 {
+    "files.associations": {
+        "stdlib.h": "c",
+        "line_follow_pid.h": "c",
+        "prop.h": "c"
+    }
 }

@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 
-// Custum delay lib
 #include "delay.h"
 #include "hardware.h"
 #include "line_follow_pid.h"
@@ -28,9 +27,12 @@ int main(void)
     motors.right = 0;
     set_motors(motors);
 
+    neural_net_t net;
+    init_net(&net);
+
     while (1){
     	line_data = read_line_sensor();
-        motors = compute_proportional(line_data.left, line_data.right);
+        motors = compute_neural_network(line_data, net);
         set_motors(motors);
 
         print_4(line_data.left, motors.left, line_data.right, motors.right);

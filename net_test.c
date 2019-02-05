@@ -25,7 +25,7 @@ int main(void)
             // printf("Starting inference\n");
             infer_net(inputs, net, &outputs);
             // print_outputs(outputs);
-            // printf("%6.5f, %6.5f, %6.5f, %6.5f\n", inputs[0], inputs[1], outputs.output[0], outputs.output[1]);
+            printf("%6.5f, %6.5f, %6.5f, %6.5f\n", inputs[0], inputs[1], outputs.output[0], outputs.output[1]);
             inputs[1] += delta;
         }
         inputs[1] = 0;

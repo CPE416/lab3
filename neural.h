@@ -19,29 +19,29 @@
 
 typedef struct {
     u08 size;
-    float bias[INPUT_NODES];
+    // float bias;
 }input_layer_t;
 
 typedef struct {
     u08 input_size;
     u08 size;
+    float bias;
     float weights[HIDDEN_NODES][INPUT_NODES];
-    float bias[HIDDEN_NODES];
 }hidden_layer_t;
 
 typedef struct {
     u08 input_size;
     u08 size;
+    float bias;
     float weights[OUTPUT_NODES][HIDDEN_NODES];
-    float bias[OUTPUT_NODES];
 }output_layer_t;
 
-typedef struct {
-    u08 input_size;
-    u08 size;
-    float **weights;
-    float *bias;
-}layer_t;
+// typedef struct {
+//     u08 input_size;
+//     u08 size;
+//     float **weights;
+//     float *bias;
+// }layer_t;
 
 typedef struct {
     float learning_rate;
@@ -64,16 +64,16 @@ void init_net(neural_net_t *net){
     net->output_layer.input_size = HIDDEN_NODES;
     net->output_layer.size = OUTPUT_NODES;
 
-    net->input_layer.bias[0] = INITIAL_BIAS;
-    net->input_layer.bias[1] = INITIAL_BIAS;
+    // net->input_layer.bias = INITIAL_BIAS;
+    net->hidden_layer.bias = INITIAL_BIAS;
+    net->output_layer.bias = INITIAL_BIAS;
+
     for(int i = 0; i < HIDDEN_NODES; i++){
-        net->hidden_layer.bias[i] = INITIAL_BIAS;
         for (int j = 0; j < INPUT_NODES; j++){
             net->hidden_layer.weights[i][j] = INITIAL_WEIGHT;
         }
     }
     for(int i = 0; i < OUTPUT_NODES; i++){
-        net->output_layer.bias[i] = INITIAL_BIAS;
         for (int j = 0; j < HIDDEN_NODES; j++){
             net->output_layer.weights[i][j] = INITIAL_WEIGHT;
         }
@@ -96,57 +96,40 @@ float sigmoid(float x){
 // output should be of size INPUT_NODES
 void infer_input_layer(float *input, input_layer_t layer, float *output){
     for(u08 index = 0; index < INPUT_NODES; index++){
-        output[index] = input[index] - layer.bias[index];
-        output[index] = sigmoid(output[index]);
+        output[index] = sigmoid(input[index]);
     }
 }
 
 // // Infer the output of an abitrary (non-input) layer.
-void infer_layer(float *input, layer_t layer, float *output){
-    u08 index = 0;
-        while(index < layer.size){
-            input[index] = 0 - layer.bias[index];
-            u08 input_index = 0;
-            while(input_index < layer.input_size){
-                output[index] += (input[input_index]
-                                        * layer.weights[index][input_index]);
-                input_index += 1;
-            }
-            output[index] = sigmoid(output[index]);
-            index += 1;
-        }
-}
+// void infer_layer(float *input, layer_t layer, float *output){
+//     for(u08 index = 0; index < layer.size; index++){
+//             output[index] = input[index] - layer.bias[index];
+//             output[index] = sigmoid(output[index]);
+//         }
+// }
 
 // Infers the output of a hidden layer
 void infer_hidden_layer(float *input, hidden_layer_t layer, float *output){
-    // infer_layer(input, (layer_t) layer, &address);
-
-    u08 hidden_index = 0;
-    while(hidden_index < layer.size){
-        input[hidden_index] = 0 - layer.bias[hidden_index];
-        u08 input_index = 0;
-        while(input_index < layer.input_size){
+    for(u08 hidden_index = 0; hidden_index < layer.size; hidden_index++){
+        input[hidden_index] = 0 - layer.bias;
+        
+        for(u08 input_index = 0; input_index < layer.input_size; input_index++){
             output[hidden_index] += (input[input_index]
                                      * layer.weights[hidden_index][input_index]);
-            input_index += 1;
         }
         output[hidden_index] = sigmoid(output[hidden_index]);
-        hidden_index += 1;
     }
 }
 
 // Infers the output of an output layer
 void infer_output_layer(float *input, output_layer_t layer, float *output){
-    u08 output_index = 0;
-    while(output_index < layer.size){
-        output[output_index] = 0 - layer.bias[output_index];
-        u08 hidden_index = 0;
-        while(hidden_index < layer.input_size){
+    for(u08 output_index = 0; output_index < layer.size; output_index++){
+        output[output_index] = 0 - layer.bias;
+
+        for (u08 hidden_index = 0; hidden_index < layer.input_size; hidden_index++){
             output[output_index] += (input[hidden_index] * layer.weights[output_index][hidden_index]);
-            hidden_index += 1;
         }
         output[output_index] = sigmoid(output[output_index]);
-        output_index += 1;
     }
 }
 
@@ -210,7 +193,6 @@ motor_command_t compute_neural_network(line_sensor_data_t line_data, neural_net_
     float input[2] = {0};
     input[0] = ((float) line_data.left) / 255.0;
     input[1] = ((float) line_data.right) / 255.0;
-
 
     net_outputs_t net_outputs;
 

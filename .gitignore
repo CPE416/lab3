@@ -4,3 +4,6 @@ net_test
 main.hex
 *.txt
 main.elf
+*.csv
+*.hex
+*.elf

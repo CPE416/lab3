@@ -43,13 +43,15 @@ int main(void)
 		// poll_linesensor(LINE_SENSOR_RIGHT);
 		// poll_linesensor(LINE_SENSOR_LEFT);
 		// delay_ms(500);
-		_sensors[0] = poll_analog_pin(LINE_SENSOR_RIGHT);
+		_sensors[1] = poll_analog_pin(LINE_SENSOR_RIGHT);
 		_sensors[0] = poll_analog_pin(LINE_SENSOR_LEFT);
 
 		pid_control(&_pid, &_sensors[0], &_motors[0]);
 
-		motors.right = _motors[0];
-		motors.left = _motors[1];
+		motors.right = _motors[1];
+		motors.left = _motors[0];
+
+		print_4(_sensors[0], motors.left, _sensors[1], motors.right);
 
 		set_motors(motors);
 

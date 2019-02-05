@@ -49,9 +49,9 @@ int calc_derivative(pid *_pid){
 
 // Takes in a PID struct, and a tuple of sensor values 
 // sensor[0] = right, sensor[1] = left
-// and returns motor values
-// motor[0] = right, motor[1] = left
-int *pid_control(pid *_pid, int *sensor){
+// and calculates motor values 
+// motors[0] = right, motors[1] = left
+void pid_control(pid *_pid, int *sensor, int *motors){
 	int actual = 0;
 	int derivative;
 	int output;
@@ -78,9 +78,8 @@ int *pid_control(pid *_pid, int *sensor){
 	//print_4(left, left_motor, right, right_motor);
 
 	//set_motors(left_motor, right_motor);
-	sensor[0] = right_motor;
-	sensor[1] = left_motor;
-	return sensor;
+	motors[0] = right_motor;
+	motors[1] = left_motor;
 }
 
 // Prints some values from a PID struct to the LCD

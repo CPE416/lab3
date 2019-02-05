@@ -2,7 +2,7 @@
 #define DEFS_H
 
 
-typedef unsigned char u08;
+//typedef unsigned char u08;
 
 #define U08_MIN 0
 #define U08_MAX 255

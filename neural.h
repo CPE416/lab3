@@ -1,11 +1,12 @@
+#ifndef NEURAL_H
+#define NEURAL_H
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "prop.h"
 
-#ifndef NEURAL_H
-#define NEURAL_H
 
 #define LEARNING_RATE (0.005)
 
@@ -83,9 +84,11 @@ float sigmoid(float x){
     // http://www.ece.utep.edu/research/webfuzzy/docs/kk-thesis/kk-thesis-html/node72.html
     return 1 / (1 + exp((double) - x));
     // // Accurate approximation of sigmoid
-    return 1/(1 + pow(0.3678749025, x));
+    // return 1/(1 + pow(0.3678749025, x));
     // // Alternate, might be faster on avr
-    return (tanh(x) + 1) / 2;
+    // return (tanh(x) + 1) / 2;
+    // // rectified linear
+    // return x * (x > 0);
 }
 
 // Infer the output of an input layer
@@ -160,10 +163,18 @@ motor_command_t get_training_target(line_sensor_data_t line_data){
     return compute_proportional(line_data.left, line_data.right);
 }
 
+float calculate_error(line_sensor_data_t line_data, float *output_layer_output){
+    motor_command_t motors = compute_proportional(line_data.left, line_data.right);
+    float target[OUTPUT_NODES] = {motors.left / 100.0, motors.right / 100.0};
+    float error = 0;
+    for (u08 i = 0; i < OUTPUT_NODES; i++){
+        error += pow2(target[0] - output_layer_output[i]);
+    }
+    return error * 0.5;
+}
+
 // Run a round of training on a neural net based on input data
 void train_net(neural_net_t *net, line_sensor_data_t line_data){
-    // Get target data
-    motor_command_t target_output = get_training_target(line_data);
     // Setup data for use in inference 
     float input[2] = {0};
     input[0] = ((float) line_data.left) / 255.0;
@@ -173,14 +184,7 @@ void train_net(neural_net_t *net, line_sensor_data_t line_data){
     // Run inference on the net
     infer_net(input, *net, &net_outputs);
 
-    // Translate output to motor commands
-    motor_command_t net_output;
-    net_output.left = (u08) (net_outputs.output[0] * 100);
-    net_output.right = (u08) (net_outputs.output[1] * 100);
-
-    float error = pow2(target_output.left - net_output.left) +
-                  pow2(target_output.right - net_output.right);
-    error = error * 0.5;
+    float error = calculate_error(line_data, net_outputs.output);
 
     // TODO: Complete implemention of training
     // TODO: Stuff involving the error

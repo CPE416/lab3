@@ -1,8 +1,11 @@
+#ifndef GLOBALS_H
+#define GLOBALS_H
+typedef unsigned char u08;
+#endif
+
 #ifndef DEFS_H
 #define DEFS_H
 
-
-typedef unsigned char u08;
 
 #define U08_MIN 0
 #define U08_MAX 255

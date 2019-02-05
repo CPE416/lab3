@@ -111,6 +111,9 @@ base_usb:
 find_usb:
 	ls /dev | diff - dev.txt
 
+valgrind: net
+	valgrind --leak-check=full ./net_test -v
+
 # Handin for use on the Unix servers
 handin: $(HANDIN_FILES)
 	handin jseng CPE416_lab3 $(HANDIN_FILES)

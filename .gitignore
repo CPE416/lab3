@@ -1,3 +1,6 @@
-main.hex
-main.elf
+*.hex
+*.elf
 net_test
+main.hex
+*.txt
+main.elf

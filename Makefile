@@ -24,7 +24,7 @@ CFLAGS = -Wall -O2 -pipe -std=c99 -pedantic
 BFLAGS = -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -mmcu=atmega645a $(CFLAGS)
 
 MAC_DEVICE = /dev/tty.usbmodem14201
-LINUX_DEVICE = /dev/ttyACM1
+LINUX_DEVICE = /dev/ttyACM0
 UNAME := $(shell uname -s)
 LINUX = Linux
 
@@ -110,6 +110,9 @@ base_usb:
 # Compare devices to file
 find_usb:
 	ls /dev | diff - dev.txt
+
+valgrind: net
+	valgrind --leak-check=full ./net_test -v
 
 # Handin for use on the Unix servers
 handin: $(HANDIN_FILES)

@@ -8,11 +8,10 @@
 #include "delay.h"
 #include "hardware.h"
 #include "line_follow_pid.h"
-#include "prop.h"
 
 
 // Settings
-#define DELAY_MS 100 // Delay time for loop
+#define DELAY_MS 50 // Delay time for loop
 
 int main(void)
 {
@@ -22,6 +21,10 @@ int main(void)
     motors.left = 0;
     motors.right = 0;
     set_motors(motors);
+
+    while((get_btn() == 0) && (get_btn2() == 0)){
+        delay_ms(1);
+    }
 
     while (1)   
     {

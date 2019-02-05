@@ -48,9 +48,9 @@ int calc_derivative(pid *_pid){
 }
 
 // Takes in a PID struct, and a tuple of sensor values 
-// sensor[0] = right, sensor[1] = left
+// sensor[0] = left, sensor[1] = right
 // and calculates motor values 
-// motors[0] = right, motors[1] = left
+// motors[0] = left, motors[1] = right
 void pid_control(pid *_pid, int *sensor, int *motors){
 	int actual = 0;
 	int derivative;
@@ -61,8 +61,8 @@ void pid_control(pid *_pid, int *sensor, int *motors){
 	//u08 right = poll_analog_pin(LINE_SENSOR_RIGHT);
 	//u08 left = poll_analog_pin(LINE_SENSOR_LEFT);
 
-	actual += sensor[0];
-	actual -= sensor[1];
+	actual += sensor[1];
+	actual -= sensor[0];
 
 	insert_error(_pid, actual);
 
@@ -78,8 +78,21 @@ void pid_control(pid *_pid, int *sensor, int *motors){
 	//print_4(left, left_motor, right, right_motor);
 
 	//set_motors(left_motor, right_motor);
-	motors[0] = right_motor;
-	motors[1] = left_motor;
+	motors[1] = right_motor;
+	motors[0] = left_motor;
+}
+
+motor_command_t compute_proportional(u08 left, u08 right){
+	motor_command_t motor;
+	
+	int actual = right - left;
+
+	int output = actual * P_TERM;
+
+	motor.left = BASE_MOTOR_SPEED + output;
+	motor.right = BASE_MOTOR_SPEED - output;
+
+	return motor;
 }
 
 // Prints some values from a PID struct to the LCD

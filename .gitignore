@@ -2,3 +2,5 @@
 *.elf
 net_test
 main.hex
+*.txt
+main.elf

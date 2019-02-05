@@ -188,6 +188,19 @@ void train_net(neural_net_t *net, line_sensor_data_t line_data){
 
     // TODO: Complete implemention of training
     // TODO: Stuff involving the error
+    u08 output_index = 0;
+    while(output_index < net->output_layer.size){
+        // output[output_index] = 0 - layer.bias[output_index];
+        u08 hidden_index = 0;
+        while(hidden_index < net->output_layer.input_size){
+            float old_weight = net->output_layer.weights[output_index][hidden_index];
+            float new_weight = old_weight - (net->learning_rate);
+            net->output_layer.weights[output_index][hidden_index] = new_weight;
+            
+            hidden_index += 1;
+        }
+        output_index += 1;
+    }
 
 }
 
@@ -210,7 +223,6 @@ motor_command_t compute_neural_network(line_sensor_data_t line_data, neural_net_
     motor_data.right = (u08)(net_outputs.output[1] * 100);
 
     return motor_data;
-
 }
 
 #endif

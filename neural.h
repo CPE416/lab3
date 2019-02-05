@@ -142,50 +142,102 @@ void infer_net(float *input, neural_net_t net, net_outputs_t *outputs){
 }
 
 // Supplies training data for neural net based on compute_proportional()
-motor_command_t get_training_target(line_sensor_data_t line_data){
-    return compute_proportional(line_data.left, line_data.right);
+void get_training_target(line_sensor_data_t line_data, float *target){
+    motor_command_t motors = compute_proportional(line_data.left, line_data.right);
+    target[0] = motors.left / 100.0;
+    target[1] = motors.right / 100.0;
 }
 
 float calculate_error(line_sensor_data_t line_data, float *output_layer_output){
-    motor_command_t motors = compute_proportional(line_data.left, line_data.right);
-    float target[OUTPUT_NODES] = {motors.left / 100.0, motors.right / 100.0};
+    float target[OUTPUT_NODES];
+    get_training_target(line_data, target);
+
     float error = 0;
     for (u08 i = 0; i < OUTPUT_NODES; i++){
-        error += pow2(target[0] - output_layer_output[i]);
+        error += pow2(target[i] - output_layer_output[i]);
     }
     return error * 0.5;
 }
 
+void copy_hidden_layer(hidden_layer_t new_layer, hidden_layer_t *dest_layer){
+    dest_layer->bias = new_layer.bias;
+
+    for(u08 hidden_index = 0; hidden_index < dest_layer->size; hidden_index ++){
+        for(u08 input_index = 0; input_index < dest_layer->input_size; input_index ++){
+            dest_layer->weights[hidden_index][input_index] = new_layer.weights[hidden_index][input_index];
+        }
+    }
+}
+
+void copy_output_layer(output_layer_t new_layer, output_layer_t *dest_layer){
+    dest_layer->bias = new_layer.bias;
+
+    for(u08 output_index = 0; output_index < dest_layer->size; output_index ++){
+        for(u08 hidden_index = 0; hidden_index < dest_layer->input_size; hidden_index ++){
+            dest_layer->weights[output_index][hidden_index] = new_layer.weights[output_index][hidden_index];
+        }
+    }
+}
+
+void train_output_layer(net_outputs_t outputs, neural_net_t net, float *target, output_layer_t *new_output_layer){
+    for(u08 output_index = 0; output_index < net.output_layer.size; output_index++){
+        float dedok = outputs.output[output_index] - target[output_index];
+        float dodnk = outputs.output[output_index] * (1 - outputs.output[output_index]);
+
+        for (u08 hidden_index = 0; hidden_index < net.output_layer.input_size; hidden_index++){
+            float dnkdwjk = outputs.hidden[hidden_index];
+
+            float delta = net.learning_rate * dedok * dodnk * dnkdwjk;
+            float old_weight = net.output_layer.weights[output_index][hidden_index];
+
+            new_output_layer->weights[output_index][hidden_index] = old_weight - delta;
+        }
+    }
+}
+
+void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, hidden_layer_t *new_hidden_layer){
+    for(u08 hidden_index = 0; hidden_index < net.output_layer.size; hidden_index++){
+        // float dedwij = outputs.hidden[hidden_index] - target[hidden_index];
+        float dedoj = 1; // Sum of weights coming out
+
+        for (u08 input_index = 0; input_index < net.hidden_layer.input_size; input_index++){
+            float dodnj = outputs.hidden[hidden_index] * (1 - outputs.hidden[hidden_index]);
+
+            float input_rate = 0.5; // WTF is this
+            float delta = net.learning_rate * dedoj * dodnj * input_rate;
+            float old_weight = net.output_layer.weights[hidden_index][input_index];
+
+            new_hidden_layer->weights[hidden_index][input_index] = old_weight - delta;
+        }
+    }
+}
+
+
 // Run a round of training on a neural net based on input data
-void train_net(neural_net_t *net, line_sensor_data_t line_data){
+void train_net(line_sensor_data_t line_data, neural_net_t *net){
     // Setup data for use in inference 
     float input[2] = {0};
     input[0] = ((float) line_data.left) / 255.0;
     input[1] = ((float) line_data.right) / 255.0;
-    net_outputs_t net_outputs;
 
-    // Run inference on the net
+    net_outputs_t net_outputs;
     infer_net(input, *net, &net_outputs);
 
-    float error = calculate_error(line_data, net_outputs.output);
+    // float error = calculate_error(line_data, net_outputs.output);
 
-    // TODO: Complete implemention of training
-    // TODO: Stuff involving the error
-    u08 output_index = 0;
-    while(output_index < net->output_layer.size){
-        // output[output_index] = 0 - layer.bias[output_index];
-        u08 hidden_index = 0;
-        while(hidden_index < net->output_layer.input_size){
-            float old_weight = net->output_layer.weights[output_index][hidden_index];
-            float new_weight = old_weight - (net->learning_rate);
-            net->output_layer.weights[output_index][hidden_index] = new_weight;
-            
-            hidden_index += 1;
-        }
-        output_index += 1;
-    }
+    float target[OUTPUT_NODES];
+    get_training_target(line_data, target);
 
+    output_layer_t new_output_layer;
+    hidden_layer_t new_hidden_layer;
+    
+    train_output_layer(net_outputs, *net, target, &new_output_layer);
+    train_hidden_layer(net_outputs, *net, target, &new_hidden_layer);
+
+    copy_hidden_layer(new_hidden_layer, &(net->hidden_layer));
+    copy_output_layer(new_output_layer, &(net->output_layer));
 }
+
 
 // Querries a neural net for motor commands
 motor_command_t compute_neural_network(line_sensor_data_t line_data, neural_net_t net){

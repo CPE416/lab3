@@ -88,7 +88,7 @@ run_net: net
 	time ./net_test
 
 pipe_net: net
-	time ./net_test > net_test.csv
+	time ./net_test > net_test.txt
 
 prep:
 	avr-objcopy -O ihex main.elf main.hex

@@ -25,16 +25,18 @@ int main(void)
 
     // printf("input[0], input[1], output[0], output[1]\n");
 
-    int iterations = 8;
+    int iterations = 2;
     while(iterations > 0){
+
+        print_net(net);
         while (line_data.left != 255){
             while(line_data.right != 255){
-                printf("Starting inference\n");
+                // printf("Starting inference\n");
                 infer_net(line_data, net, &outputs);
-                printf("inputs: %d, %d, outputs: %4.3f, %4.3f\n", line_data.left, line_data.right, outputs.output[0], outputs.output[1]);
-                print_net(net);
+                // printf("inputs: %d, %d, outputs: %4.3f, %4.3f\n", line_data.left, line_data.right, outputs.output[0], outputs.output[1]);
+                // print_net(net);
                 train_net(line_data, &net);
-                print_net(net);
+                // print_net(net);
                 line_data.right += 1;
             }
             line_data.right = 0;
@@ -71,7 +73,7 @@ void print_net(neural_net_t net){
     w = net.hidden_layer.weights[2];
     printf("\tnode 2: %4.3f, %4.3f\n", w[0], w[1]);
 
-    printf("ouput layer: bias: %4.3f\n", net.output_layer.bias);
+    printf("output layer: bias: %4.3f\n", net.output_layer.bias);
     w = net.output_layer.weights[0];
     printf("\tnode 0: %4.3f, %4.3f, %4.3f\n", w[0], w[1], w[2]);
     w = net.output_layer.weights[1];

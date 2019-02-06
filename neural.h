@@ -168,8 +168,8 @@ float calculate_error(line_sensor_data_t line_data, float *output_layer_output){
     return error * 0.5;
 }
 
-void copy_hidden_layer(hidden_layer_t new_layer, hidden_layer_t *dest_layer){
-    dest_layer->bias = new_layer.bias;
+void copy_hidden_weights(hidden_layer_t new_layer, hidden_layer_t *dest_layer){
+    // dest_layer->bias = new_layer.bias;
 
     for(u08 hidden_index = 0; hidden_index < dest_layer->size; hidden_index ++){
         for(u08 input_index = 0; input_index < dest_layer->input_size; input_index ++){
@@ -178,8 +178,8 @@ void copy_hidden_layer(hidden_layer_t new_layer, hidden_layer_t *dest_layer){
     }
 }
 
-void copy_output_layer(output_layer_t new_layer, output_layer_t *dest_layer){
-    dest_layer->bias = new_layer.bias;
+void copy_output_weights(output_layer_t new_layer, output_layer_t *dest_layer){
+    // dest_layer->bias = new_layer.bias;
 
     for(u08 output_index = 0; output_index < dest_layer->size; output_index ++){
         for(u08 hidden_index = 0; hidden_index < dest_layer->input_size; hidden_index ++){
@@ -239,8 +239,8 @@ void train_net(line_sensor_data_t line_data, neural_net_t *net){
     train_output_layer(net_outputs, *net, target, &new_output_layer);
     train_hidden_layer(net_outputs, *net, target, &new_hidden_layer);
 
-    copy_hidden_layer(new_hidden_layer, &(net->hidden_layer));
-    copy_output_layer(new_output_layer, &(net->output_layer));
+    copy_hidden_weights(new_hidden_layer, &(net->hidden_layer));
+    copy_output_weights(new_output_layer, &(net->output_layer));
 }
 
 

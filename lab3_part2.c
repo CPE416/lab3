@@ -13,8 +13,10 @@
 // Settings
 #define DELAY_MS 100 // Delay time for loop
 
-#define MODE_PROP 1 
-#define MODE_NEURAL 0
+#define MODE_PROP 0
+#define MODE_DATA 1
+#define MODE_TRAINING 2 
+#define MODE_NEURAL 3
 
 u08 set_mode(u08 mode);
 
@@ -30,7 +32,27 @@ int main(void)
     neural_net_t net;
     init_net(&net);
 
+    u08 mode = MODE_PROP;
+
     while (1){
+        mode = set_mode(mode);
+        switch(mode){
+            case MODE_PROP:
+
+                break;
+            case MODE_DATA:
+
+                break;
+            case MODE_TRAINING:
+
+                break;
+            case MODE_NEURAL:
+
+                break;
+            default:
+                mode = MODE_PROP;
+        }
+
     	line_data = read_line_sensor();
         motors = compute_neural_network(line_data, net);
         set_motors(motors);

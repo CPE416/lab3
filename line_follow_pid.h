@@ -82,6 +82,8 @@ void pid_control(pid *_pid, int *sensor, int *motors){
 	motors[0] = left_motor;
 }
 
+
+//takes in sensor values and returns a motor command
 motor_command_t compute_proportional(u08 left, u08 right){
 	motor_command_t motor;
 	

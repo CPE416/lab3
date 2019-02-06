@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "prop.h"
-
+#include "line_follow_pid.h"
 
 #define LEARNING_RATE (0.005)
 

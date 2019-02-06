@@ -7,3 +7,4 @@ main.elf
 *.csv
 *.hex
 *.elf
+test_output

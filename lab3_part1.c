@@ -16,7 +16,7 @@
 int main(void)
 {
     init();
-    line_sensor_data_t line_data;
+    line_data_t line_data;
     motor_command_t motors;
     motors.left = 0;
     motors.right = 0;

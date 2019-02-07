@@ -81,15 +81,6 @@ test_hardware: test_hardware.c $(wildcard $(BOARD_LIB)/*.c)
 	$(CC) $(BFLAGS) -O2 -o main.elf test_hardware.c $(wildcard $(BOARD_LIB)/*.c)
 	make prep
 
-net: clean
-	gcc $(CFLAGS) -g -o net_test net_test.c -lm
-
-run_net: net
-	time ./net_test
-
-pipe_net: net
-	time ./net_test > net_test.txt
-
 prep:
 	avr-objcopy -O ihex main.elf main.hex
 	avr-size main.elf
@@ -102,6 +93,19 @@ else
 program: program_mac
 endif
 
+net: clean
+	gcc $(CFLAGS) -g -o test_net test_net.c -lm
+
+run_net: net
+	time ./test_net
+
+pipe_net: net
+	time ./test_net > test_net.csv
+
+output:
+	gcc $(CFLAGS) -g -o test_output test_output.c -lm
+	time ./test_output > output.txt
+
 # Detect USB device
 # Pipe all devices to file
 base_usb:
@@ -112,7 +116,7 @@ find_usb:
 	ls /dev | diff - dev.txt
 
 valgrind: net
-	valgrind --leak-check=full ./net_test -v
+	valgrind --track-origins=yes --leak-check=full ./test_output 
 
 # Handin for use on the Unix servers
 handin: $(HANDIN_FILES)

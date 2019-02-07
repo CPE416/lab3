@@ -27,8 +27,8 @@ light_data_t read_light_sensor(){
     return data;
 }
 
-line_sensor_data_t read_line_sensor(){
-    line_sensor_data_t data;
+line_data_t read_line_sensor(){
+    line_data_t data;
     data.left = analog(LINE_SENSOR_LEFT);
     data.right = analog(LINE_SENSOR_RIGHT);
     return data;
@@ -45,6 +45,11 @@ void motor(u08 num, int speed){
 void set_motors(motor_command_t motors){
     set_servo(MOTOR_LEFT, ( motors.left * 0.3333 ) + 127);
     set_servo(MOTOR_RIGHT, ((0 - motors.right) * 0.3333 ) + 127);
+}
+
+void halt(){
+    motor(MOTOR_LEFT, 0);
+    motor(MOTOR_RIGHT, 0);
 }
 
 u08 poll_analog_pin(u08 pin_num){

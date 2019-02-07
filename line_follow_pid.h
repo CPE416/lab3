@@ -5,9 +5,7 @@
 
 #include <stdio.h>
 
-// Our libs
-#include "delay.h"
-#include "hardware.h"
+#include "defs.h"
 
 #define THRESHOLD 200
 #define BASE_MOTOR_SPEED 25
@@ -97,10 +95,10 @@ motor_command_t compute_proportional(u08 left, u08 right){
 	return motor;
 }
 
-// Prints some values from a PID struct to the LCD
-void print_pid(struct pid _pid){
-	print_4(_pid.error[0], _pid.p_term, _pid.i_term, _pid.d_term);
-}
+// // Prints some values from a PID struct to the LCD
+// void print_pid(struct pid _pid){
+// 	print_4(_pid.error[0], _pid.p_term, _pid.i_term, _pid.d_term);
+// }
 
 #endif
 

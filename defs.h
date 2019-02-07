@@ -34,20 +34,20 @@ typedef unsigned char u08;
 #define LINE_SENSOR_LEFT_MIN U08_MIN
 #define LINE_SENSOR_LEFT_MAX U08_MAX
 
-typedef struct motor_command{
+typedef struct {
     u08 left;
     u08 right;
 }motor_command_t;
 
-typedef struct light_data{
+typedef struct {
     u08 left;
     u08 right;
 }light_data_t;
 
-typedef struct line_sensor_data{
+typedef struct {
     u08 left;
     u08 right;
-}line_sensor_data_t;
+}line_data_t;
 
 float pow2(float x){
     return x * x;

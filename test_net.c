@@ -10,7 +10,7 @@
 
 #define LEARNING_RATE (0.01)
 
-#define MAX_EPOCHS 500
+#define MAX_EPOCHS 10
 
 int main(void)
 {
@@ -23,6 +23,9 @@ int main(void)
     init_net(&net, LEARNING_RATE);
     net_outputs_t outputs;
 
+
+    infer_net(line_data, net, &outputs);
+    chart_error(0, motors, outputs);
     for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
         while (continue_epoch()){
                 line_data = get_line_iter();
@@ -32,5 +35,6 @@ int main(void)
             }
         chart_error(epoch, motors, outputs);
     }
+    chart_error(MAX_EPOCHS, motors, outputs);
     return 0;
 }

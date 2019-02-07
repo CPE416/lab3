@@ -89,7 +89,7 @@ float sigmoid(float x){
 // output should be of size INPUT_NODES
 void infer_input_layer(float *input, input_layer_t layer, float *output){
     for(u08 index = 0; index < layer.size; index++){
-        output[index] = sigmoid(input[index]);
+        output[index] = input[index];
     }
 }
 
@@ -120,8 +120,10 @@ void infer_output_layer(float *input, output_layer_t layer, float *output){
 
 // Setup data for use in inference 
 void transform_input(line_data_t line_data, float *input){
+    // Put line data between 0.0 and 1.0
     input[0] = ((float) line_data.left) / 255.0;
     input[1] = ((float) line_data.right) / 255.0;
+    // printf("inputs: left: %9.6f, right: %9.6f\n", input[0], input[1]);
 }
 
 // Run inference on a net

@@ -5,9 +5,9 @@
 #include "net_analysis.h"
 #include "line_data_iterator.h"
 
-// #include "line_follow_pid.h"
+#include "line_follow_pid.h"
 
-#define MAX_EPOCHS 8
+#define MAX_EPOCHS 500
 
 int main(void)
 {
@@ -27,7 +27,7 @@ int main(void)
                 infer_net(line_data, net, &outputs);
                 train_net(line_data, &net, motors);
             }
-        chart_error(epoch, line_data, outputs);
+        chart_error(epoch, motors, outputs);
     }
     return 0;
 }

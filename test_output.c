@@ -4,6 +4,7 @@
 #include "neural.h"
 #include "net_analysis.h"
 #include "line_data_iterator.h"
+#include "line_follow_pid.h"
 
 
 #define DELAY_MS 100 // Delay time for loop

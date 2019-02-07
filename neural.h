@@ -7,7 +7,7 @@
 
 // #include "prop.h"
 
-#define LEARNING_RATE (0.001)
+#define LEARNING_RATE (0.01)
 
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)
@@ -18,7 +18,6 @@
 
 typedef struct {
     u08 size;
-    // float bias;
 }input_layer_t;
 
 typedef struct {
@@ -40,13 +39,6 @@ typedef struct {
     output_layer_t new_output_layer;
     hidden_layer_t new_hidden_layer;
 }training_data_t;
-
-// typedef struct {
-//     u08 input_size;
-//     u08 size;
-//     float **weights;
-//     float *bias;
-// }layer_t;
 
 typedef struct {
     float learning_rate;
@@ -105,14 +97,6 @@ void infer_input_layer(float *input, input_layer_t layer, float *output){
     }
 }
 
-// // Infer the output of an abitrary (non-input) layer.
-// void infer_layer(float *input, layer_t layer, float *output){
-//     for(u08 index = 0; index < layer.size; index++){
-//             output[index] = input[index] - layer.bias[index];
-//             output[index] = sigmoid(output[index]);
-//         }
-// }
-
 // Infers the output of a hidden layer
 void infer_hidden_layer(float *input, hidden_layer_t layer, float *output){
     for(u08 hidden_index = 0; hidden_index < layer.size; hidden_index++){
@@ -161,8 +145,7 @@ void get_training_target(motor_command_t motors, float *target){
     target[1] = motors.right / 100.0;
 }
 
-float calculate_error(line_data_t line_data, float *output_layer_output){
-    motor_command_t motors = compute_proportional(line_data.left, line_data.right);
+float calculate_error(motor_command_t motors,  float output_layer_output[OUTPUT_NODES]){
     float target[OUTPUT_NODES];
     get_training_target(motors, target);
 
@@ -236,7 +219,7 @@ void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, 
         float old_bias = net.hidden_layer.bias[hidden_index];
         float new_bias = old_bias - (net.learning_rate * dedoj * dodnj * (0.0 - 1.0));
 
-        training_data->new_output_layer.bias[hidden_index] = new_bias;
+        training_data->new_hidden_layer.bias[hidden_index] = new_bias;
 
         // Input layer loop
         for (u08 input_index = 0; input_index < net.hidden_layer.input_size; input_index++){
@@ -249,7 +232,6 @@ void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, 
             training_data->new_hidden_layer.weights[hidden_index][input_index] = old_weight - delta;
         }
     }
-    // TODO: Train bias
 }
 
 
@@ -273,7 +255,6 @@ void train_net(line_data_t line_data, neural_net_t *net, motor_command_t motors)
     copy_hidden_weights(training_data.new_hidden_layer, &(net->hidden_layer));
     copy_output_weights(training_data.new_output_layer, &(net->output_layer));
 }
-
 
 // Querries a neural net for motor commands
 motor_command_t compute_neural_network(line_data_t line_data, neural_net_t net){

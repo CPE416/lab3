@@ -8,3 +8,4 @@ main.elf
 *.hex
 *.elf
 test_output
+test_net

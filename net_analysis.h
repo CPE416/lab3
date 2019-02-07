@@ -9,6 +9,14 @@ void chart_error(int iteration, line_data_t line_data, net_outputs_t outputs){
     printf("%d,  %6.5f\n", iteration, error);
 }
 
+
+void print_results(line_data_t line_data, float *net_out, motor_command_t motors){
+    printf("Inputs: %d, %d, Net: %3.0f, %3.0f, Prop: %d, %d\n", 
+                       line_data.left, line_data.right,
+                       100 * net_out[0], 100 * net_out[1],
+                       motors.left, motors.right);
+}
+
 void print_error(line_data_t line_data, net_outputs_t outputs){
     float error = calculate_error(line_data, outputs.output);
     printf("Error: %4.3f\n", error);

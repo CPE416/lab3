@@ -15,13 +15,6 @@ void init_line_data_iter(){
     right_val = 0;
 }
 
-line_data_t get_line_iter(){
-    line_data_t line_data;
-    line_data.left = left_val;
-    line_data.right = right_val;
-    return line_data;
-}
-
 u08 continue_epoch(){
     return left_val < MAX_LINE_VAL;
 }
@@ -36,5 +29,16 @@ void increment_iter(){
         left_val = MIN_LINE_VAL;
     }
 }
+
+line_data_t get_line_iter(){
+    line_data_t line_data;
+    line_data.left = left_val;
+    line_data.right = right_val;
+
+    increment_iter();
+
+    return line_data;
+}
+
 
 #endif

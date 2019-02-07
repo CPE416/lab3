@@ -7,7 +7,7 @@
 #include "delay.h"
 #include "hardware.h"
 #include "line_follow_pid.h"
-#include "prop.h"
+//#include "prop.h"
 #include "neural.h"
 
 // Settings
@@ -23,8 +23,11 @@ u08 set_mode(u08 mode);
 int main(void)
 {
     init();
+
+    // Variables
     line_sensor_data_t line_data;
     motor_command_t motors;
+    int data_counter = 0;
     motors.left = 0;
     motors.right = 0;
     set_motors(motors);
@@ -34,8 +37,29 @@ int main(void)
 
     u08 mode = MODE_PROP;
 
+    clear_screen();
+    print_string("Part 2");
+
+    //Button Press Before Start
+    while((get_btn() == 0) && (get_btn2() == 0)){
+        delay_ms(1);
+    }
+
+    clear_screen();
+    print_string("Proport");
+    lcd_cursor(0, 1);
+    print_string("ional");
+
+    //Button Press Delay before start
+    delay_ms(200);
+
     while (1){
+
+        // Check for Button Press and change 
+        // Modes and Display
         mode = set_mode(mode);
+
+        // Main Loop
         switch(mode){
             case MODE_PROP:
 
@@ -53,34 +77,50 @@ int main(void)
                 mode = MODE_PROP;
         }
 
-    	line_data = read_line_sensor();
-        motors = compute_neural_network(line_data, net);
-        set_motors(motors);
+    	// line_data = read_line_sensor();
+     //    motors = compute_neural_network(line_data, net);
+     //    set_motors(motors);
 
-        print_4(line_data.left, motors.left, line_data.right, motors.right);
-        delay_ms(DELAY_MS);
+     //    print_4(line_data.left, motors.left, line_data.right, motors.right);
+     //    delay_ms(DELAY_MS);
     }
     return 27;
 }
 
 
 u08 set_mode(u08 mode){
-    u08 pressed = get_btn();
+    u08 pressed = ((get_btn() == 1) | (get_btn2() == 1));
     if(pressed){
-        if (mode == MODE_PROP)
-            mode = MODE_NEURAL;
-        else 
-            mode = MODE_PROP;
-    }
-    switch (mode){
+        switch (mode){
         case MODE_PROP:
-            led_off(1);
-            led_on(0);
+            mode = MODE_DATA;
+            halt();
+            clear_screen();
+            print_string("Data");
+            print_num(0);
+            break;
+        case MODE_DATA:
+            mode = MODE_TRAINING;
+            halt();
+            clear_screen();
+            print_string("Training");
+            break;
+        case MODE_TRAINING:
+            mode = MODE_NEURAL;
+            halt();
+            clear_screen();
+            print_string("Neural");
             break;
         case MODE_NEURAL:
-            led_off(0);
-            led_on(1);
+            mode = MODE_TRAINING;
+            halt();
+            clear_screen();
+            print_string("Training");
             break;
+        default:
+            mode = MODE_PROP;
         }
+        delay_ms(200);
+    }
     return mode;
 }

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "prop.h"
+// #include "prop.h"
 
 
 #define LEARNING_RATE (0.005)

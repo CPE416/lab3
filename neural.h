@@ -5,10 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// #include "prop.h"
-
-#define LEARNING_RATE (0.01)
-
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)
 #define OUTPUT_NODES (2)
@@ -53,8 +49,8 @@ typedef struct {
     float output[OUTPUT_NODES];
 }net_outputs_t;
 
-void init_net(neural_net_t *net){
-    net->learning_rate = LEARNING_RATE;
+void init_net(neural_net_t *net, float learning_rate){
+    net->learning_rate = learning_rate;
     net->input_layer.size = INPUT_NODES;
     net->hidden_layer.input_size = INPUT_NODES;
     net->hidden_layer.size = HIDDEN_NODES;
@@ -92,7 +88,7 @@ float sigmoid(float x){
 // input should be of size INPUT_NODES
 // output should be of size INPUT_NODES
 void infer_input_layer(float *input, input_layer_t layer, float *output){
-    for(u08 index = 0; index < INPUT_NODES; index++){
+    for(u08 index = 0; index < layer.size; index++){
         output[index] = sigmoid(input[index]);
     }
 }

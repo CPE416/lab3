@@ -12,6 +12,9 @@
 #define TRUE 1 
 #define FALSE 0
 
+
+#define LEARNING_RATE (0.01)
+
 #define MAX_EPOCHS 8
 
 
@@ -23,7 +26,7 @@ int main(void)
     motor_command_t motors;
 
     neural_net_t net;
-    init_net(&net);
+    init_net(&net, LEARNING_RATE);
     net_outputs_t outputs;
 
     print_net(net);

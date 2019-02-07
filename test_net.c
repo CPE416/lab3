@@ -7,6 +7,9 @@
 
 #include "line_follow_pid.h"
 
+
+#define LEARNING_RATE (0.01)
+
 #define MAX_EPOCHS 500
 
 int main(void)
@@ -17,7 +20,7 @@ int main(void)
     init_line_data_iter();
 
     neural_net_t net;
-    init_net(&net);
+    init_net(&net, LEARNING_RATE);
     net_outputs_t outputs;
 
     for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){

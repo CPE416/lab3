@@ -8,7 +8,7 @@
 #include "hardware.h"
 #include "line_follow_pid.h"
 //#include "prop.h"
-//#include "neural.h"
+#include "neural.h"
 
 // Settings
 #define DELAY_MS 100 // Delay time for 
@@ -41,8 +41,8 @@ int main(void)
     halt();
 
     line_data_t cache[CACHE_SIZE];
-    //neural_net_t net;
-    //init_net(&net);
+    neural_net_t net;
+    init_net(&net);
 
     u08 mode = MODE_PROP;
 

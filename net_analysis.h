@@ -39,26 +39,27 @@ void print_outputs(net_outputs_t outputs){
 }
 
 void print_hidden_weights(hidden_layer_t layer){
+    float *b = layer.bias;
     float *w = layer.weights[0];
-    printf("\tnode 0: %4.3f, %4.3f\n", w[0], w[1]);
+
+    printf("Hidden layer:\n\tnode 0: bias: %4.3f\n\tweights: %4.3f, %4.3f\n", b[0], w[0], w[1]);
     w = layer.weights[1];
-    printf("\tnode 1: %4.3f, %4.3f\n", w[0], w[1]);
+    printf("\tnode 1: bias: %4.3f\n\tweights: %4.3f, %4.3f\n", b[1], w[0], w[1]);
     w = layer.weights[2];
-    printf("\tnode 2: %4.3f, %4.3f\n", w[0], w[1]);
+    printf("\tnode 2: bias: %4.3f\n\tweights: %4.3f, %4.3f\n", b[2], w[0], w[1]);
 }
 
 void print_output_weights(output_layer_t layer){
+    float *b = layer.bias;
     float *w = layer.weights[0];
-    printf("\tnode 0: %4.3f, %4.3f, %4.3f\n", w[0], w[1], w[2]);
+    printf("Output layer:\n\tnode 0: bias: %4.3f\n\tweights: %4.3f, %4.3f, %4.3f\n", b[0], w[0], w[1], w[2]);
     w = layer.weights[1];
-    printf("\tnode 0: %4.3f, %4.3f, %4.3f\n", w[0], w[1], w[2]);
+    printf("\tnode 0: bias: %4.3f\n\tweights: %4.3f, %4.3f, %4.3f\n", b[0], w[0], w[1], w[2]);
 }
 
 void print_net(neural_net_t net){
-    printf("hidden layer: bias: %4.3f\n", net.hidden_layer.bias);
-    print_hidden_weights(net.hidden_layer);
 
-    printf("output layer: bias: %4.3f\n", net.output_layer.bias);
+    print_hidden_weights(net.hidden_layer);
     print_output_weights(net.output_layer);
 }
 

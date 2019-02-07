@@ -7,7 +7,7 @@
 
 #include "line_follow_pid.h"
 
-#define LEARNING_RATE (0.005)
+#define LEARNING_RATE (0.001)
 
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)
@@ -24,14 +24,14 @@ typedef struct {
 typedef struct {
     u08 input_size;
     u08 size;
-    float bias;
+    float bias[HIDDEN_NODES];
     float weights[HIDDEN_NODES][INPUT_NODES];
 }hidden_layer_t;
 
 typedef struct {
     u08 input_size;
     u08 size;
-    float bias;
+    float bias[OUTPUT_NODES];
     float weights[OUTPUT_NODES][HIDDEN_NODES];
 }output_layer_t;
 
@@ -70,15 +70,15 @@ void init_net(neural_net_t *net){
     net->output_layer.size = OUTPUT_NODES;
 
     // net->input_layer.bias = INITIAL_BIAS;
-    net->hidden_layer.bias = INITIAL_BIAS;
-    net->output_layer.bias = INITIAL_BIAS;
-
+    
     for(int i = 0; i < HIDDEN_NODES; i++){
+        net->hidden_layer.bias[i] = INITIAL_BIAS;
         for (int j = 0; j < INPUT_NODES; j++){
             net->hidden_layer.weights[i][j] = INITIAL_WEIGHT;
         }
     }
     for(int i = 0; i < OUTPUT_NODES; i++){
+        net->output_layer.bias[i] = INITIAL_BIAS; 
         for (int j = 0; j < HIDDEN_NODES; j++){
             net->output_layer.weights[i][j] = INITIAL_WEIGHT;
         }
@@ -116,7 +116,7 @@ void infer_input_layer(float *input, input_layer_t layer, float *output){
 // Infers the output of a hidden layer
 void infer_hidden_layer(float *input, hidden_layer_t layer, float *output){
     for(u08 hidden_index = 0; hidden_index < layer.size; hidden_index++){
-        input[hidden_index] = 0 - layer.bias;
+        input[hidden_index] = 0 - layer.bias[hidden_index];
         
         for(u08 input_index = 0; input_index < layer.input_size; input_index++){
             output[hidden_index] += (input[input_index]
@@ -129,7 +129,7 @@ void infer_hidden_layer(float *input, hidden_layer_t layer, float *output){
 // Infers the output of an output layer
 void infer_output_layer(float *input, output_layer_t layer, float *output){
     for(u08 output_index = 0; output_index < layer.size; output_index++){
-        output[output_index] = 0 - layer.bias;
+        output[output_index] = 0 - layer.bias[output_index];
 
         for (u08 hidden_index = 0; hidden_index < layer.input_size; hidden_index++){
             output[output_index] += (input[hidden_index] * layer.weights[output_index][hidden_index]);
@@ -174,9 +174,10 @@ float calculate_error(line_data_t line_data, float *output_layer_output){
 }
 
 void copy_hidden_weights(hidden_layer_t new_layer, hidden_layer_t *dest_layer){
-    // dest_layer->bias = new_layer.bias;
-
+    // Hidden layer loop
     for(u08 hidden_index = 0; hidden_index < dest_layer->size; hidden_index ++){
+        dest_layer->bias[hidden_index] = new_layer.bias[hidden_index];
+        // Input layer loop
         for(u08 input_index = 0; input_index < dest_layer->input_size; input_index ++){
             dest_layer->weights[hidden_index][input_index] = new_layer.weights[hidden_index][input_index];
         }
@@ -184,9 +185,10 @@ void copy_hidden_weights(hidden_layer_t new_layer, hidden_layer_t *dest_layer){
 }
 
 void copy_output_weights(output_layer_t new_layer, output_layer_t *dest_layer){
-    // dest_layer->bias = new_layer.bias;
-
+    // Output layer loop
     for(u08 output_index = 0; output_index < dest_layer->size; output_index ++){
+        dest_layer->bias[output_index] = new_layer.bias[output_index];
+        // Hidden layer loop
         for(u08 hidden_index = 0; hidden_index < dest_layer->input_size; hidden_index ++){
             dest_layer->weights[output_index][hidden_index] = new_layer.weights[output_index][hidden_index];
         }
@@ -194,17 +196,22 @@ void copy_output_weights(output_layer_t new_layer, output_layer_t *dest_layer){
 }
 
 void train_output_layer(net_outputs_t outputs, neural_net_t net, float *target, training_data_t *training_data){
+    // Output layer loop
     for(u08 output_index = 0; output_index < net.output_layer.size; output_index++){
         float out_min_target = outputs.output[output_index] - target[output_index];
         float out_prime = outputs.output[output_index] * (1 - outputs.output[output_index]);
-
         float node_delta = out_min_target * out_prime;
+
         training_data->output_node_delta[output_index] = node_delta;
 
+        float old_bias = net.output_layer.bias[output_index];
+        float new_bias = old_bias - (net.learning_rate * node_delta * -1.0);
+
+        training_data->new_output_layer.bias[output_index] = new_bias;
+        // Hidden layer loop
         for (u08 hidden_index = 0; hidden_index < net.output_layer.input_size; hidden_index++){
             float hidden_out = outputs.hidden[hidden_index];
             float old_weight = net.output_layer.weights[output_index][hidden_index];
-
             float new_weight = old_weight - (net.learning_rate * node_delta * hidden_out);
 
             training_data->new_output_layer.weights[output_index][hidden_index] = new_weight;
@@ -213,22 +220,36 @@ void train_output_layer(net_outputs_t outputs, neural_net_t net, float *target, 
 }
 
 void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, training_data_t *training_data){
+    // Hidden layer loop
     for(u08 hidden_index = 0; hidden_index < net.output_layer.size; hidden_index++){
-        // float dedwij = outputs.hidden[hidden_index] - target[hidden_index];
-        float dedoj = 1; // Sum of weights coming out
+        float dedoj = 0; // Sum of weights coming out
+        // Output layer loop
+        for (u08 output_index = 0; output_index < net.output_layer.size; output_index++){
+            float out_node_weight = net.output_layer.weights[output_index][hidden_index];
+            float out_node_delta = training_data->output_node_delta[output_index];
+            dedoj += out_node_weight * out_node_delta;
+        }
 
+        // correct derivative of sigmoid hidden node output
+        float dodnj = outputs.hidden[hidden_index] * (1 - outputs.hidden[hidden_index]);
+
+        float old_bias = net.hidden_layer.bias[hidden_index];
+        float new_bias = old_bias - (net.learning_rate * dedoj * dodnj * (0.0 - 1.0));
+
+        training_data->new_output_layer.bias[hidden_index] = new_bias;
+
+        // Input layer loop
         for (u08 input_index = 0; input_index < net.hidden_layer.input_size; input_index++){
-            // correct derivative of sigmoid hidden node output
-            float dodnj = outputs.hidden[hidden_index] * (1 - outputs.hidden[hidden_index]);
 
-            float input_rate = 0.5; // WTF is this
-            float delta = net.learning_rate * dedoj * dodnj * input_rate;
+            float input = outputs.input[input_index]; 
+            float delta = net.learning_rate * dedoj * dodnj * input;
             
             float old_weight = net.output_layer.weights[hidden_index][input_index];
 
             training_data->new_hidden_layer.weights[hidden_index][input_index] = old_weight - delta;
         }
     }
+    // TODO: Train bias
 }
 
 
@@ -247,7 +268,7 @@ void train_net(line_data_t line_data, neural_net_t *net, motor_command_t motors)
     training_data_t training_data;
     
     train_output_layer(net_outputs, *net, target, &training_data);
-    train_hidden_layer(net_outputs, *net, target, training_data);
+    train_hidden_layer(net_outputs, *net, target, &training_data);
 
     copy_hidden_weights(training_data.new_hidden_layer, &(net->hidden_layer));
     copy_output_weights(training_data.new_output_layer, &(net->output_layer));

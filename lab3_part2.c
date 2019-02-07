@@ -8,32 +8,41 @@
 #include "hardware.h"
 #include "line_follow_pid.h"
 //#include "prop.h"
-#include "neural.h"
+//#include "neural.h"
 
 // Settings
-#define DELAY_MS 100 // Delay time for loop
+#define DELAY_MS 100 // Delay time for 
+#define DELAY_DATA_COLLECTION 500
+#define DELAY_TRAINING_INCREASE 10
 
 #define MODE_PROP 0
 #define MODE_DATA 1
 #define MODE_TRAINING 2 
 #define MODE_NEURAL 3
 
-u08 set_mode(u08 mode);
+#define CACHE_SIZE 10000
+
+u08 set_mode(u08 mode, int *flag);
+void print_data(line_data_t sensor, int count);
+void print_training(int count);
 
 int main(void)
 {
     init();
 
     // Variables
-    line_sensor_data_t line_data;
+    line_data_t line_data;
     motor_command_t motors;
     int data_counter = 0;
+    int training_iteration_count = 0;
+    int flag_iterate = 0;
     motors.left = 0;
     motors.right = 0;
-    set_motors(motors);
+    halt();
 
-    neural_net_t net;
-    init_net(&net);
+    line_data_t cache[CACHE_SIZE];
+    //neural_net_t net;
+    //init_net(&net);
 
     u08 mode = MODE_PROP;
 
@@ -57,17 +66,53 @@ int main(void)
 
         // Check for Button Press and change 
         // Modes and Display
-        mode = set_mode(mode);
+        mode = set_mode(mode, &flag_iterate);
 
         // Main Loop
         switch(mode){
             case MODE_PROP:
+                // Proportional Control
+                line_data = read_line_sensor();
+                motors = compute_proportional(line_data.left, line_data.right);
+                set_motors(motors);
+
+                // Loop Delay
+                delay_ms(ERROR_CHECK_DELAY);
 
                 break;
             case MODE_DATA:
+                // Record Data
+                cache[data_counter] = read_line_sensor();
+                print_data(cache[data_counter], data_counter);
+                data_counter++;
+                
+                // Check if cache is full
+                if(data_counter >= CACHE_SIZE){
+                    mode = MODE_TRAINING;
+                    halt();
+                    clear_screen();
+                    print_string("Training");
+                }
+                // Loop Delay
+                delay_ms(DELAY_DATA_COLLECTION);
 
                 break;
             case MODE_TRAINING:
+                // Train that bumbleboy!!!
+                // Wait for button press to determine training iterations
+                if(flag_iterate == 0){
+                    delay_ms(200);
+                    training_iteration_count = 0;
+                    while((get_btn() == 0) && (get_btn2() == 0)){
+                        print_training(training_iteration_count);
+                        training_iteration_count++;
+                        delay_ms(DELAY_TRAINING_INCREASE);
+                    }
+                    delay_ms(500);
+                    flag_iterate = 1;
+                }
+                
+
 
                 break;
             case MODE_NEURAL:
@@ -87,8 +132,8 @@ int main(void)
     return 27;
 }
 
-
-u08 set_mode(u08 mode){
+// Switch Modes on Button Press
+u08 set_mode(u08 mode, int *flag){
     u08 pressed = ((get_btn() == 1) | (get_btn2() == 1));
     if(pressed){
         switch (mode){
@@ -104,6 +149,7 @@ u08 set_mode(u08 mode){
             halt();
             clear_screen();
             print_string("Training");
+            *flag = 0;
             break;
         case MODE_TRAINING:
             mode = MODE_NEURAL;
@@ -116,6 +162,7 @@ u08 set_mode(u08 mode){
             halt();
             clear_screen();
             print_string("Training");
+            *flag = 0;
             break;
         default:
             mode = MODE_PROP;
@@ -123,4 +170,22 @@ u08 set_mode(u08 mode){
         delay_ms(200);
     }
     return mode;
+}
+
+void print_data(line_data_t sensor, int count){
+    clear_screen();
+    print_string("Data");
+    lcd_cursor(4, 0);
+    print_num(count);
+    lcd_cursor(0, 1);
+    print_num(sensor.left);
+    lcd_cursor(4, 1);
+    print_num(sensor.left);
+}
+
+void print_training(int count){
+    clear_screen();
+    print_string("Training");
+    lcd_cursor(0, 1);
+    print_num(count);
 }

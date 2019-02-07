@@ -4,12 +4,12 @@
 #include "defs.h"
 #include "neural.h"
 
-void chart_error(int iteration, line_sensor_data_t line_data, net_outputs_t outputs){
+void chart_error(int iteration, line_data_t line_data, net_outputs_t outputs){
     float error = calculate_error(line_data, outputs.output);
     printf("%d,  %6.5f\n", iteration, error);
 }
 
-void print_error(line_sensor_data_t line_data, net_outputs_t outputs){
+void print_error(line_data_t line_data, net_outputs_t outputs){
     float error = calculate_error(line_data, outputs.output);
     printf("Error: %4.3f\n", error);
 }

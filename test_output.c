@@ -15,12 +15,12 @@
 #define MAX_ITERATIONS 2
 
 
-void print_results(line_sensor_data_t line_data, float *net_out, motor_command_t motors);
+void print_results(line_data_t line_data, float *net_out, motor_command_t motors);
 
 int main(void)
 {
     // const float delta = 1.0 / 255.0;
-    line_sensor_data_t line_data;
+    line_data_t line_data;
     line_data.left = 0;
     line_data.right = 0;
 
@@ -30,6 +30,8 @@ int main(void)
     init_net(&net);
     net_outputs_t outputs;
 
+    print_net(net);
+    
     for(int iteration = 0; iteration < MAX_ITERATIONS; iteration++){
         while (line_data.left != 255){
             while(line_data.right != 255){
@@ -49,7 +51,7 @@ int main(void)
     }
     return 0;
 }
-void print_results(line_sensor_data_t line_data, float *net_out, motor_command_t motors){
+void print_results(line_data_t line_data, float *net_out, motor_command_t motors){
     printf("Inputs: %d, %d, Net: %3.0f, %3.0f, Prop: %d, %d\n", 
                        line_data.left, line_data.right,
                        100 * net_out[0], 100 * net_out[1],

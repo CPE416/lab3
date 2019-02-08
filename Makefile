@@ -96,6 +96,7 @@ endif
 net: clean
 	gcc $(CFLAGS) -g -o test_net test_net.c -lm
 	gcc $(CFLAGS) -g -o test_output test_output.c -lm
+	gcc $(CFLAGS) -g -o test_net_array test_net_array.c -lm 
 
 run_net: net
 	time ./test_net
@@ -105,6 +106,9 @@ pipe_net: net
 
 output: net
 	time ./test_output > output.txt
+
+array: net
+	time ./test_net_array
 
 # Detect USB device
 # Pipe all devices to file

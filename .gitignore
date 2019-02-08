@@ -9,3 +9,4 @@ main.elf
 *.elf
 test_output
 test_net
+test_net_array

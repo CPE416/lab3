@@ -39,10 +39,12 @@ int main(void)
     infer_net(line_data, net, &outputs);
 
     print_results(line_data, outputs.output, motors);
+    print_outputs(outputs);
 
     print_net(net);
     train_net(line_data, &net, motors);
     print_net(net);
+    print_results(line_data, outputs.output, motors);
 
     // for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
     //     while (continue_epoch()){

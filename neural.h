@@ -227,7 +227,6 @@ void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, 
 
         // Input layer loop
         for (u08 input_index = 0; input_index < net.hidden_layer.input_size; input_index++){
-
             float input = outputs.input[input_index]; 
             float delta = net.learning_rate * dedoj * dodnj * input;
             

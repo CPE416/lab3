@@ -31,11 +31,12 @@ void print_outputs(net_outputs_t outputs){
     for (int i = 0; i < HIDDEN_NODES; i++){
         printf("%4.3f, ", outputs.hidden[i]);
     }
+    
+    printf("\n output: ");
+    for (int i = 0; i < OUTPUT_NODES; i++){
+         printf("%6.5f, ", outputs.output[i]);
+    }
     printf("\n");
-    // printf("\n output: ");
-    // for (int i = 0; i < OUTPUT_NODES; i++){
-    //     printf("%6.5f, ", outputs.output[i]);
-    // }
 }
 
 void print_hidden_weights(hidden_layer_t layer){
@@ -54,7 +55,7 @@ void print_output_weights(output_layer_t layer){
     float *w = layer.weights[0];
     printf("Output layer:\n\tnode 0: bias: %4.3f\n\t\tweights: %4.3f, %4.3f, %4.3f\n", b[0], w[0], w[1], w[2]);
     w = layer.weights[1];
-    printf("\tnode 0: bias: %4.3f\n\t\tweights: %4.3f, %4.3f, %4.3f\n", b[0], w[0], w[1], w[2]);
+    printf("\tnode 1: bias: %4.3f\n\t\tweights: %4.3f, %4.3f, %4.3f\n", b[1], w[0], w[1], w[2]);
 }
 
 void print_net(neural_net_t net){

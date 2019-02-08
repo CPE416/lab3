@@ -89,11 +89,13 @@ float sigmoid(float x){
 // Infer the output of an input layer
 // input should be of size INPUT_NODES
 // output should be of size INPUT_NODES
-// void infer_input_layer(float *input, input_layer_t layer, float *output){
-//     for(u08 index = 0; index < layer.size; index++){
-//         output[index] = input[index];
-//     }
-// }
+void infer_input_layer(float *input, input_layer_t layer, float *output){
+    // Input layer loop
+    for(u08 index = 0; index < layer.size; index++){
+        // Does no calculations, only places inputs in output 
+        output[index] = input[index];
+    }
+}
 
 // Infers the output of a hidden layer
 void infer_hidden_layer(float *input, hidden_layer_t layer, float *output){
@@ -113,13 +115,13 @@ void infer_hidden_layer(float *input, hidden_layer_t layer, float *output){
 void infer_output_layer(float *input, output_layer_t layer, float *output){
     // Output layer loop
     for(u08 output_index = 0; output_index < layer.size; output_index++){
-        float output_output = 0 - layer.bias[output_index];
+        float node_output = 0 - layer.bias[output_index];
         // Hidden Layer Weight Loop
         for (u08 hidden_index = 0; hidden_index < layer.input_size; hidden_index++){
             float weight = layer.weights[output_index][hidden_index];
-            output_output += (input[hidden_index] * weight);
+            node_output += (input[hidden_index] * weight);
         }
-        output[output_index] = sigmoid(output_output);
+        output[output_index] = sigmoid(node_output);
     }
 }
 
@@ -136,8 +138,8 @@ void infer_net(line_data_t line_data, neural_net_t net, net_outputs_t *outputs){
     float input[2];
     transform_input(line_data, input);
 
-    //infer_input_layer(input, net.input_layer, outputs->input);
-    infer_hidden_layer(input, net.hidden_layer, outputs->hidden);
+    infer_input_layer(input, net.input_layer, outputs->input);
+    infer_hidden_layer(outputs->input, net.hidden_layer, outputs->hidden);
     infer_output_layer(outputs->hidden, net.output_layer, outputs->output);
 }
 

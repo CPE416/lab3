@@ -11,7 +11,7 @@ void chart_error(int iteration, motor_command_t motors, net_outputs_t outputs){
 
 
 void print_results(line_data_t line_data, float *net_out, motor_command_t motors){
-    printf("Inputs: %d, %d,\tNet: %3.0f, %3.0f,\tProp: %d, %d,\tError: %5.3f%c\n", 
+    printf("Inputs: %d, %d,\tNet: %3.0f, %3.0f,\tProp: %d, %d,\tError: %5.3f%c\n\n", 
                        line_data.left, line_data.right,
                        100 * net_out[0], 100 * net_out[1],
                        motors.left, motors.right,
@@ -27,15 +27,15 @@ void chart_results(line_data_t line_data, float *net_out, motor_command_t motors
 }
 void print_error(int epoch_num, motor_command_t motors, net_outputs_t outputs){
     float error = calculate_error(motors, outputs.output);
-    printf("Epoch: %d, Error: %5.3f%c\n", epoch_num, error * 100, '%');
+    printf("Epoch: %d, \tError: %5.3f%c\n", epoch_num, error * 100, '%');
 }
 
 void print_outputs(net_outputs_t outputs){
-    printf("\n input: ");
+    printf("\nInference outputs:\n\tinput: ");
     for (int i = 0; i < INPUT_NODES; i++){
         printf("%4.3f, ", outputs.input[i]);
     }
-    printf("\n hidden: ");
+    printf("\n\thidden: ");
     for (int i = 0; i < HIDDEN_NODES; i++){
         printf("%4.3f, ", outputs.hidden[i]);
     }
@@ -44,7 +44,7 @@ void print_outputs(net_outputs_t outputs){
     for (int i = 0; i < OUTPUT_NODES; i++){
          printf("%6.5f, ", outputs.output[i]);
     }
-    printf("\n");
+    printf("\n\n");
 }
 
 void print_hidden_weights(hidden_layer_t layer){

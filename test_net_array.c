@@ -8,16 +8,16 @@
 #include "line_follow_pid.h"
 
 #define NUM_NETS 4
-#define MAX_EPOCHS (10000)
+#define MAX_EPOCHS (1000)
 
 int main(void)
 {
     motor_command_t motors;
 
     line_data_t line_data;
-    init_line_data_iter(3);
+    init_line_data_iter(1);
 
-    float learning_rate[NUM_NETS] = {0.003, 0.002, 0.002, 0.001};
+    float learning_rate[NUM_NETS] = {0.003, 0.002, 0.001, 0.0005};
     neural_net_t nets[NUM_NETS];
     net_outputs_t outputs;
 

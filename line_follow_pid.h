@@ -89,8 +89,24 @@ motor_command_t compute_proportional(u08 left, u08 right){
 
 	int output = actual * P_TERM;
 
-	motor.left = BASE_MOTOR_SPEED + output;
-	motor.right = BASE_MOTOR_SPEED - output;
+	int left_motor = BASE_MOTOR_SPEED + output;
+	int right_motor = BASE_MOTOR_SPEED - output;
+
+	if(left_motor < 0){
+		left_motor = 0;
+	}
+	if(right_motor < 0){
+		right_motor = 0;
+	}
+	if(left_motor > 100){
+		left_motor = 100;
+	}
+	if(right_motor > 100){
+		right_motor = 100;
+	}
+
+	motor.left = left_motor;
+	motor.right = right_motor;
 
 	return motor;
 }

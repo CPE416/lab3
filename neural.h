@@ -111,13 +111,13 @@ void infer_hidden_layer(float *input, hidden_layer_t layer, float *output){
 void infer_output_layer(float *input, output_layer_t layer, float *output){
     // Output layer loop
     for(u08 output_index = 0; output_index < layer.size; output_index++){
-        float output_output = 0 - layer.bias[output_index];
+        float node_output = 0 - layer.bias[output_index];
         // Hidden Layer Weight Loop
         for (u08 hidden_index = 0; hidden_index < layer.input_size; hidden_index++){
             float weight = layer.weights[output_index][hidden_index];
-            output_output += (input[hidden_index] * weight);
+            node_output += (input[hidden_index] * weight);
         }
-        output[output_index] = sigmoid(output_output);
+        output[output_index] = sigmoid(node_output);
     }
 }
 

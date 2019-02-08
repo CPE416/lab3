@@ -21,6 +21,7 @@ int main(void)
 
     neural_net_t net;
     init_net(&net, LEARNING_RATE);
+    print_net(net);
     net_outputs_t outputs;
 
 

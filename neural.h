@@ -130,7 +130,6 @@ void transform_input(line_data_t line_data, float *input){
 }
 
 // Run inference on a net
-// input should be of size INPUT_NODES
 void infer_net(line_data_t line_data, neural_net_t net, net_outputs_t *outputs){
     float input[2];
     transform_input(line_data, input);
@@ -237,15 +236,15 @@ void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, 
 
 
 // Run a round of training on a neural net based on input data
-void train_net(line_data_t line_data, neural_net_t *net, motor_command_t motors){
+void train_net(line_data_t line_data, neural_net_t *net, motor_command_t target_motors){
     net_outputs_t net_outputs;
     infer_net(line_data, *net, &net_outputs);
 
     // float error = calculate_error(line_data, net_outputs.output);
 
     float target[OUTPUT_NODES];
-    target[0] = motors.left;
-    target[1] = motors.right;
+    target[0] = target_motors.left;
+    target[1] = target_motors.right;
 
 
     training_data_t training_data;

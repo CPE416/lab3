@@ -221,7 +221,7 @@ void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, 
         float dodnj = outputs.hidden[hidden_index] * (1 - outputs.hidden[hidden_index]);
 
         float old_bias = net.hidden_layer.bias[hidden_index];
-        float new_bias = old_bias - (net.learning_rate * dedoj * dodnj * (0.0 - 1.0));
+        float new_bias = old_bias - (net.learning_rate * dedoj * dodnj * -1.0);
 
         training_data->new_hidden_layer.bias[hidden_index] = new_bias;
 

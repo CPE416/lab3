@@ -11,15 +11,23 @@ void chart_error(int iteration, motor_command_t motors, net_outputs_t outputs){
 
 
 void print_results(line_data_t line_data, float *net_out, motor_command_t motors){
-    printf("Inputs: %d, %d, Net: %3.0f, %3.0f, Prop: %d, %d\n", 
+    printf("Inputs: %d, %d,\tNet: %3.0f, %3.0f,\tProp: %d, %d,\tError: %5.3f%c\n", 
                        line_data.left, line_data.right,
                        100 * net_out[0], 100 * net_out[1],
-                       motors.left, motors.right);
+                       motors.left, motors.right,
+                       calculate_error(motors, net_out) * 100, '%');
 }
 
-void print_error(motor_command_t motors, net_outputs_t outputs){
+void chart_results(line_data_t line_data, float *net_out, motor_command_t motors){
+    printf("%d, %d, %3.0f, %3.0f, %d, %d, %5.3f%c\n", 
+                       line_data.left, line_data.right,
+                       100 * net_out[0], 100 * net_out[1],
+                       motors.left, motors.right,
+                       calculate_error(motors, net_out) * 100, '%');
+}
+void print_error(int epoch_num, motor_command_t motors, net_outputs_t outputs){
     float error = calculate_error(motors, outputs.output);
-    printf("Error: %4.3f\n", error);
+    printf("Epoch: %d, Error: %5.3f%c\n", epoch_num, error * 100, '%');
 }
 
 void print_outputs(net_outputs_t outputs){
@@ -59,7 +67,6 @@ void print_output_weights(output_layer_t layer){
 }
 
 void print_net(neural_net_t net){
-
     print_hidden_weights(net.hidden_layer);
     print_output_weights(net.output_layer);
 }

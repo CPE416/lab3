@@ -246,8 +246,8 @@ void train_net(line_data_t line_data, neural_net_t *net, motor_command_t target_
     // float error = calculate_error(line_data, net_outputs.output);
 
     float target[OUTPUT_NODES];
-    target[0] = target_motors.left;
-    target[1] = target_motors.right;
+    target[0] = ((float) target_motors.left) / 100.0;
+    target[1] = ((float) target_motors.right) / 100.0;
 
 
     training_data_t training_data;

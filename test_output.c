@@ -21,7 +21,7 @@
 int main(void)
 {
     line_data_t line_data;
-    init_line_data_iter();
+    init_line_data_iter(5);
 
     motor_command_t motors;
 

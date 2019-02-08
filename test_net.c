@@ -17,7 +17,7 @@ int main(void)
     motor_command_t motors;
 
     line_data_t line_data;
-    init_line_data_iter();
+    init_line_data_iter(1);
 
     neural_net_t net;
     init_net(&net, LEARNING_RATE);

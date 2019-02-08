@@ -8,6 +8,7 @@
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)
 #define OUTPUT_NODES (2)
+#define RAND_SEED (12)
 
 #define INITIAL_WEIGHT (((float) rand()) / RAND_MAX)
 #define INITIAL_BIAS (((float) rand()) / RAND_MAX)
@@ -50,6 +51,7 @@ typedef struct {
 }net_outputs_t;
 
 void init_net(neural_net_t *net, float learning_rate){
+    srand(RAND_SEED);
     net->learning_rate = learning_rate;
     net->input_layer.size = INPUT_NODES;
     net->hidden_layer.input_size = INPUT_NODES;

@@ -10,7 +10,7 @@
 
 #define LEARNING_RATE (0.01)
 
-#define MAX_EPOCHS 10
+#define MAX_EPOCHS 1
 
 int main(void)
 {
@@ -37,5 +37,6 @@ int main(void)
         chart_error(epoch, motors, outputs);
     }
     chart_error(MAX_EPOCHS, motors, outputs);
+    print_net(net);
     return 0;
 }

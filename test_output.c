@@ -31,18 +31,30 @@ int main(void)
 
     print_net(net);
     
-    
-    for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
-        while (continue_epoch()){
-            line_data = get_line_iter();
-            motors = compute_proportional(line_data.left, line_data.right);
-            infer_net(line_data, net, &outputs);
-            
-            // print_results(line_data, outputs.output, motors);
 
-            train_net(line_data, &net, motors);
-        }
-        print_net(net);
-    }
+    line_data.left = 200;
+    line_data.right = 150;
+
+    motors = compute_proportional(line_data.left, line_data.right);
+    infer_net(line_data, net, &outputs);
+
+    print_results(line_data, outputs.output, motors);
+
+    print_net(net);
+    train_net(line_data, &net, motors);
+    print_net(net);
+
+    // for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
+    //     while (continue_epoch()){
+    //         line_data = get_line_iter();
+    //         motors = compute_proportional(line_data.left, line_data.right);
+    //         infer_net(line_data, net, &outputs);
+            
+    //         // print_results(line_data, outputs.output, motors);
+
+    //         train_net(line_data, &net, motors);
+    //     }
+    //     print_net(net);
+    // }
     return 0;
 }

@@ -7,56 +7,38 @@
 #include "line_follow_pid.h"
 
 
-#define LEARNING_RATE (0.0001)
+#define LEARNING_RATE 0.002
 
-#define MAX_EPOCHS 2000
+#define MAX_EPOCHS 10
 
 #define ITER_TRAINING_RATE (2)
 
 
 int main(void)
 {
-    line_data_t line_data;
     init_line_data_iter(ITER_TRAINING_RATE);
-
-    motor_command_t motors;
 
     neural_net_t net;
     init_net(&net, LEARNING_RATE);
-    
-    net_outputs_t outputs;    
-    for(int i = 0; i<1000; i++){
-        line_data.left = rand()/RAND_MAX;
-        line_data.right = 150;
 
-        motors = compute_proportional(line_data.left, line_data.right);
+    int training_iteration_count = 100;
 
-        print_net(net);
-        infer_net(line_data, net, &outputs);
-        print_outputs(outputs);
-        print_results(line_data, outputs.output, motors);
-
-    
-        train_net(line_data, &net, motors);
-    
-        print_net(net);
-        infer_net(line_data, net, &outputs);
-        print_outputs(outputs);
-        print_results(line_data, outputs.output, motors);
+    int data_counter = 100;
+    int current_data_counter = 0;
+    while(current_data_counter < data_counter - 1){
+        
+        line_data_t line = get_line_iter();
+        motor_command_t motors1 = compute_proportional(line.left, line.right);
+        printf("motors: %d, %d\n", motors1.left, motors1.right);
+        printf("current data counter: %d\n", current_data_counter);
+        train_net(line, &net, motors1);
+        
+        current_data_counter++;
     }
-    
+    // delay_ms(100);
+    printf("training iteration count: %d\n", training_iteration_count);
+    training_iteration_count--;
 
-    for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
-        while (continue_epoch()){
-            line_data = get_line_iter();
-            motors = compute_proportional(line_data.left, line_data.right);
-            infer_net(line_data, net, &outputs);
-            
-            print_results(line_data, outputs.output, motors);
 
-            train_net(line_data, &net, motors);
-        }
-        print_net(net);
-    }
     return 0;
 }

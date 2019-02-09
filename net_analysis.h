@@ -19,7 +19,7 @@ void print_results(line_data_t line_data, float *net_out, motor_command_t motors
 }
 
 void chart_results(line_data_t line_data, float *net_out, motor_command_t motors){
-    printf("%d, %d, %3.0f, %3.0f, %d, %d, %5.3f%c\n", 
+    printf("%d, %d, \t%3.0f, %3.0f, \t%d, %d, %5.3f%c\n", 
                        line_data.left, line_data.right,
                        100 * net_out[0], 100 * net_out[1],
                        motors.left, motors.right,

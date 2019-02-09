@@ -42,6 +42,9 @@ line_data_t get_line_iter(){
 
     increment_iter();
 
+    // line_data.left =  200;
+    // line_data.right = 0;
+
     return line_data;
 }
 

@@ -29,6 +29,7 @@ u08 set_mode(u08 mode, int *flag);
 void print_data(line_data_t sensor, int count);
 void print_training(int count);
 void print_training2(int count);
+void print_training3(int count1, int count2);
 
 int main(void)
 {
@@ -121,12 +122,16 @@ int main(void)
                 if(training_iteration_count >= 0){
                     current_data_counter = 0;
                     while(current_data_counter < data_counter - 1){
+                        
                         line_data_t line = cache[current_data_counter];
-                        motors = compute_proportional(line.left, line.right);
-                        train_net(line, &net, motors);
-                        print_training2(current_data_counter);
+                        motor_command_t motors1 = compute_proportional(line.left, line.right);
+                        print_training3(motors1.left, motors1.right);
+                        //print_training2(current_data_counter);
+                        //train_net(line, &net, motors1);
+                        
                         current_data_counter++;
                     }
+                    delay_ms(100);
                     print_training2(training_iteration_count);
                     training_iteration_count--;
                 }else{
@@ -224,5 +229,14 @@ void print_training2(int count){
     print_num(count);
     lcd_cursor(4, 1);
     print_string("a");
+}
+
+void print_training3(int count1, int count2){
+    clear_screen();
+    print_string("Training");
+    lcd_cursor(0, 1);
+    print_num(count1);
+    lcd_cursor(4, 1);
+    print_num(count2);
 }
 

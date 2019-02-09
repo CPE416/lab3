@@ -27,6 +27,7 @@ int main(void)
 
     neural_net_t net;
     init_net(&net, LEARNING_RATE);
+    
     net_outputs_t outputs;    
     for(int i = 0; i<1000; i++){
         line_data.left = rand()/RAND_MAX;

@@ -3,8 +3,9 @@
 
 #include <math.h>
 #include <stdlib.h>
-
 #include <time.h>
+
+#include "hardware.h"
 
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)
@@ -251,7 +252,7 @@ void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, 
 void train_net(line_data_t line_data, neural_net_t *net, motor_command_t target_motors){
     net_outputs_t net_outputs;
     infer_net(line_data, *net, &net_outputs);
-
+    
     float target[net->output_layer.size];
     transform_motor_to_target(target_motors, target);
 

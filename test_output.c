@@ -13,7 +13,7 @@
 #define FALSE 0
 
 
-#define LEARNING_RATE (0.002)
+#define LEARNING_RATE (0.02)
 
 #define MAX_EPOCHS 8
 
@@ -28,24 +28,26 @@ int main(void)
     neural_net_t net;
     init_net(&net, LEARNING_RATE);
     net_outputs_t outputs;    
+    for(int i = 0; i<1000; i++){
+        line_data.left = rand()/RAND_MAX;
+        line_data.right = 150;
 
-    line_data.left = 200;
-    line_data.right = 150;
+        motors = compute_proportional(line_data.left, line_data.right);
 
-    motors = compute_proportional(line_data.left, line_data.right);
+        print_net(net);
+        infer_net(line_data, net, &outputs);
+        print_outputs(outputs);
+        print_results(line_data, outputs.output, motors);
 
-    print_net(net);
-    infer_net(line_data, net, &outputs);
-    print_outputs(outputs);
-    print_results(line_data, outputs.output, motors);
-
-
-    train_net(line_data, &net, motors);
     
-    print_net(net);
-    infer_net(line_data, net, &outputs);
-    print_outputs(outputs);
-    print_results(line_data, outputs.output, motors);
+        train_net(line_data, &net, motors);
+    
+        print_net(net);
+        infer_net(line_data, net, &outputs);
+        print_outputs(outputs);
+        print_results(line_data, outputs.output, motors);
+    }
+    
 
     // for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
     //     while (continue_epoch()){

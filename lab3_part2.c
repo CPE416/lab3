@@ -12,19 +12,23 @@
 
 // Settings
 #define DELAY_MS 100 // Delay time for 
-#define DELAY_DATA_COLLECTION 500
+#define DELAY_DATA_COLLECTION 50
 #define DELAY_TRAINING_INCREASE 10
+#define DELAY_NEURAL 200
 
 #define MODE_PROP 0
 #define MODE_DATA 1
 #define MODE_TRAINING 2 
 #define MODE_NEURAL 3
 
+#define LEARNING_RATE 0.002
+
 #define CACHE_SIZE 10000
 
 u08 set_mode(u08 mode, int *flag);
 void print_data(line_data_t sensor, int count);
 void print_training(int count);
+void print_training2(int count);
 
 int main(void)
 {
@@ -34,6 +38,7 @@ int main(void)
     line_data_t line_data;
     motor_command_t motors;
     int data_counter = 0;
+    int current_data_counter = 0;
     int training_iteration_count = 0;
     int flag_iterate = 0;
     motors.left = 0;
@@ -41,8 +46,10 @@ int main(void)
     halt();
 
     line_data_t cache[CACHE_SIZE];
+
     neural_net_t net;
-    init_net(&net);
+    init_net(&net, LEARNING_RATE);
+
 
     u08 mode = MODE_PROP;
 
@@ -111,11 +118,32 @@ int main(void)
                     delay_ms(500);
                     flag_iterate = 1;
                 }
+                if(training_iteration_count >= 0){
+                    current_data_counter = 0;
+                    while(current_data_counter < data_counter - 1){
+                        line_data_t line = cache[current_data_counter];
+                        motors = compute_proportional(line.left, line.right);
+                        train_net(line, &net, motors);
+                        print_training2(current_data_counter);
+                        current_data_counter++;
+                    }
+                    print_training2(training_iteration_count);
+                    training_iteration_count--;
+                }else{
+                    mode = MODE_NEURAL;
+                    halt();
+                    clear_screen();
+                    print_string("Neural");
+                }
                 
-
-
                 break;
             case MODE_NEURAL:
+                line_data = read_line_sensor();
+                motors = compute_neural_network(line_data, net);
+                set_motors(motors);
+
+                // Loop Delay
+                delay_ms(DELAY_NEURAL);
 
                 break;
             default:
@@ -180,7 +208,7 @@ void print_data(line_data_t sensor, int count){
     lcd_cursor(0, 1);
     print_num(sensor.left);
     lcd_cursor(4, 1);
-    print_num(sensor.left);
+    print_num(sensor.right);
 }
 
 void print_training(int count){
@@ -189,3 +217,12 @@ void print_training(int count){
     lcd_cursor(0, 1);
     print_num(count);
 }
+void print_training2(int count){
+    clear_screen();
+    print_string("Training");
+    lcd_cursor(0, 1);
+    print_num(count);
+    lcd_cursor(4, 1);
+    print_string("a");
+}
+

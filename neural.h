@@ -3,12 +3,13 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include <stdio.h>
+
+#include <time.h>
 
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)
 #define OUTPUT_NODES (2)
-#define RAND_SEED (17 * 83 / 19)
+#define RAND_SEED (time(NULL))
 
 #define INITIAL_WEIGHT (((float) rand()) / RAND_MAX)
 #define INITIAL_BIAS (((float) rand()) / RAND_MAX)
@@ -18,14 +19,12 @@ typedef struct {
 }input_layer_t;
 
 typedef struct {
-    // u08 input_size;
     u08 size;
     float bias[HIDDEN_NODES];
     float weights[HIDDEN_NODES][INPUT_NODES];
 }hidden_layer_t;
 
 typedef struct {
-    // u08 input_size;
     u08 size;
     float bias[OUTPUT_NODES];
     float weights[OUTPUT_NODES][HIDDEN_NODES];
@@ -53,15 +52,10 @@ typedef struct {
 void init_net(neural_net_t *net, float learning_rate){
     srand(RAND_SEED);
     net->learning_rate = learning_rate;
+    
     net->input_layer.size = INPUT_NODES;
-
-    // net->hidden_layer.input_size = INPUT_NODES;
     net->hidden_layer.size = HIDDEN_NODES;
-
-    // net->output_layer.input_size = HIDDEN_NODES;
     net->output_layer.size = OUTPUT_NODES;
-
-    // net->input_layer.bias = INITIAL_BIAS;
     
     for(int i = 0; i < HIDDEN_NODES; i++){
         net->hidden_layer.bias[i] = INITIAL_BIAS;

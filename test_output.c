@@ -7,21 +7,17 @@
 #include "line_follow_pid.h"
 
 
-#define DELAY_MS 100 // Delay time for loop
+#define LEARNING_RATE (0.0001)
 
-#define TRUE 1 
-#define FALSE 0
+#define MAX_EPOCHS 2000
 
-
-#define LEARNING_RATE (0.002)
-
-#define MAX_EPOCHS 8
+#define ITER_TRAINING_RATE (2)
 
 
 int main(void)
 {
     line_data_t line_data;
-    init_line_data_iter(5);
+    init_line_data_iter(ITER_TRAINING_RATE);
 
     motor_command_t motors;
 
@@ -47,17 +43,17 @@ int main(void)
     print_outputs(outputs);
     print_results(line_data, outputs.output, motors);
 
-    // for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
-    //     while (continue_epoch()){
-    //         line_data = get_line_iter();
-    //         motors = compute_proportional(line_data.left, line_data.right);
-    //         infer_net(line_data, net, &outputs);
+    for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
+        while (continue_epoch()){
+            line_data = get_line_iter();
+            motors = compute_proportional(line_data.left, line_data.right);
+            infer_net(line_data, net, &outputs);
             
-    //         // print_results(line_data, outputs.output, motors);
+            print_results(line_data, outputs.output, motors);
 
-    //         train_net(line_data, &net, motors);
-    //     }
-    //     print_net(net);
-    // }
+            train_net(line_data, &net, motors);
+        }
+        print_net(net);
+    }
     return 0;
 }

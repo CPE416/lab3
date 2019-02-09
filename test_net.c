@@ -8,11 +8,13 @@
 #include "line_follow_pid.h"
 
 
-#define LEARNING_RATE (0.002)
+#define LEARNING_RATE (0.0001)
 
-#define MAX_EPOCHS (50000)
-#define ITER_TRAINING_RATE (25)
+#define MAX_EPOCHS (2000)
+#define EPOCH_PRINT_INTERVAL (100)
+#define ITER_TRAINING_RATE (2)
 #define ITER_PRINTING_RATE (25)
+
 
 int main(void)
 {
@@ -40,7 +42,7 @@ int main(void)
 
                 train_net(line_data, &net, motors);
         }
-        if (epoch % 2000 == 0){
+        if (epoch % EPOCH_PRINT_INTERVAL == 0){
             print_error(epoch, motors, outputs);
         } 
     }

@@ -11,13 +11,13 @@
 
 // Settings
 #define DELAY_MS 200 // Delay time for loop
-#define DELAY_LOOP 10
+#define DELAY_LOOP 500
 
 #define MODE_3A 1 
 #define MODE_3B 0
 
 #define DEAD_ZONE 200
-#define LEARNING_RATE 0.002
+#define LEARNING_RATE 0.1
 
 #define MODE_PROP 0
 #define MODE_NEURAL 1
@@ -92,16 +92,18 @@ int main(void)
         // Control motor based on mode
         switch (mode){
             case MODE_PROP:
+                net.learning_rate = LEARNING_RATE;
                 set_motors(motors);
                 break;
-            case MODE_NEURAL:  
+            case MODE_NEURAL:   
+                net.learning_rate = 0;
                 motors = compute_neural_network(line_data, net);
                 set_motors(motors);
                 break;
         }
 
         // Delay
-        delay_ms(DELAY_LOOP);
+        // delay_us(DELAY_LOOP);
         
 
         // u08 left = data[0];
@@ -153,7 +155,7 @@ u08 set_mode(u08 mode){
             default:
                 mode = MODE_PROP;
         }
-        delay_ms(500);
+        delay_ms(200);
     }
     return mode;
     // u08 pressed = get_btn();
@@ -188,4 +190,13 @@ void print_neural(int count){
     print_string("Neural");
     lcd_cursor(0, 1);
     print_num(count);
+}
+
+void print_training3(int count1, int count2){
+    clear_screen();
+    print_string("Training");
+    lcd_cursor(0, 1);
+    print_num(count1);
+    lcd_cursor(4, 1);
+    print_num(count2);
 }

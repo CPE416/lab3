@@ -8,15 +8,15 @@
 #include "line_follow_pid.h"
 
 
-#define LEARNING_RATE (0.0001)
+#define LEARNING_RATE (0.01)
 
-#define MAX_EPOCHS (2000)
-#define EPOCH_PRINT_INTERVAL (100)
-#define ITER_TRAINING_RATE (2)
+#define MAX_EPOCHS (100)
+#define EPOCH_PRINT_INTERVAL (1)
+#define ITER_TRAINING_RATE (1)
 #define ITER_PRINTING_RATE (25)
 
 
-int main(void)
+int main()
 {
     motor_command_t motors;
 

@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "hardware.h"
 
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)
@@ -182,11 +181,11 @@ void copy_hidden_weights(hidden_layer_t new_layer, neural_net_t *net){
 void copy_output_weights(output_layer_t new_layer, neural_net_t *net){
     // Output layer loop
     for(u08 output_index = 0; output_index < net->hidden_layer.size; output_index ++){
-        net->hidden_layer.bias[output_index] = new_layer.bias[output_index];
+        net->output_layer.bias[output_index] = new_layer.bias[output_index];
 
         // Hidden layer loop
         for(u08 hidden_index = 0; hidden_index < net->hidden_layer.size; hidden_index ++){
-            net->hidden_layer.weights[output_index][hidden_index] = new_layer.weights[output_index][hidden_index];
+            net->output_layer.weights[output_index][hidden_index] = new_layer.weights[output_index][hidden_index];
         }
     }
 }
@@ -237,7 +236,7 @@ void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, 
         float new_bias = old_bias - (net.learning_rate * dedoj * dodnj * -1.0);
         training_data->new_hidden_layer.bias[hidden_index] = new_bias;
 
-        // Input layer loop
+        // Input layer loop to calculate hidden weights
         for (u08 input_index = 0; input_index < net.input_layer.size; input_index++){
             float input = outputs.input[input_index]; 
             float old_weight = net.hidden_layer.weights[hidden_index][input_index];

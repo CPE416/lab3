@@ -10,8 +10,8 @@
 #define OUTPUT_NODES (2)
 #define RAND_SEED (time(NULL))
 
-#define INITIAL_WEIGHT (((float) rand()) / RAND_MAX)
-#define INITIAL_BIAS (((float) rand()) / RAND_MAX)
+#define INITIAL_WEIGHT ((2.0 *  rand()) / RAND_MAX)
+#define INITIAL_BIAS ((2.0 * rand()) / RAND_MAX)
 
 typedef struct {
     u08 size;

@@ -21,7 +21,7 @@
 #define MODE_TRAINING 2 
 #define MODE_NEURAL 3
 
-#define LEARNING_RATE 0.1
+#define LEARNING_RATE 0.8
 
 #define CACHE_SIZE 500
 

@@ -11,11 +11,11 @@ void chart_error(int iteration, motor_command_t motors, net_outputs_t outputs){
 
 
 void print_results(line_data_t line_data, float *net_out, motor_command_t motors){
-    printf("Inputs: %d, %d,\tNet: %3.0f, %3.0f,\tProp: %d, %d,\tError: %5.3f%c\n\n", 
+    printf("Inputs: %d, %d,\tNet: %3.0f, %3.0f,\tProp: %d, %d,\tLoss: %5.3f\n\n", 
                        line_data.left, line_data.right,
                        100 * net_out[0], 100 * net_out[1],
                        motors.left, motors.right,
-                       calculate_error(motors, net_out) * 100, '%');
+                       calculate_error(motors, net_out));
 }
 
 void chart_results(line_data_t line_data, float *net_out, motor_command_t motors){
@@ -27,7 +27,7 @@ void chart_results(line_data_t line_data, float *net_out, motor_command_t motors
 }
 void print_error(int epoch_num, motor_command_t motors, net_outputs_t outputs){
     float error = calculate_error(motors, outputs.output);
-    printf("Epoch: %d, \tError: %5.3f%c\n", epoch_num, error * 100, '%');
+    printf("Epoch: %d, \tLoss: %5.3f\n", epoch_num, error);
 }
 
 void print_outputs(net_outputs_t outputs){

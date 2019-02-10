@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "hardware.h"
 
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)

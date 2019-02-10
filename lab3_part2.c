@@ -23,7 +23,7 @@
 
 #define LEARNING_RATE 0.002
 
-#define CACHE_SIZE 10000
+#define CACHE_SIZE 200
 
 u08 set_mode(u08 mode, int *flag);
 void print_data(line_data_t sensor, int count);
@@ -127,7 +127,7 @@ int main(void)
                         motor_command_t motors1 = compute_proportional(line.left, line.right);
                         print_training3(motors1.left, motors1.right);
                         //print_training2(current_data_counter);
-                        //train_net(line, &net, motors1);
+                        train_net(line, &net, motors1);
                         
                         current_data_counter++;
                     }

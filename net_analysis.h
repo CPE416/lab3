@@ -5,7 +5,7 @@
 #include "neural.h"
 
 void chart_error(int iteration, motor_command_t motors, net_outputs_t outputs){
-    float error = calculate_error(motors, outputs.output);
+    float error = calculate_loss(motors, outputs.output);
     printf("%d,  %6.5f\n", iteration, error);
 }
 
@@ -15,7 +15,7 @@ void print_results(line_data_t line_data, float *net_out, motor_command_t motors
                        line_data.left, line_data.right,
                        100 * net_out[0], 100 * net_out[1],
                        motors.left, motors.right,
-                       calculate_error(motors, net_out));
+                       calculate_loss(motors, net_out));
 }
 
 void chart_results(line_data_t line_data, float *net_out, motor_command_t motors){
@@ -23,10 +23,10 @@ void chart_results(line_data_t line_data, float *net_out, motor_command_t motors
                        line_data.left, line_data.right,
                        100 * net_out[0], 100 * net_out[1],
                        motors.left, motors.right,
-                       calculate_error(motors, net_out));
+                       calculate_loss(motors, net_out));
 }
 void print_error(int epoch_num, motor_command_t motors, net_outputs_t outputs){
-    float error = calculate_error(motors, outputs.output);
+    float error = calculate_loss(motors, outputs.output);
     printf("Epoch: %d, \tLoss: %5.3f\n", epoch_num, error);
 }
 

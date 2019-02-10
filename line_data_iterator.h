@@ -3,9 +3,9 @@
 
 #include "defs.h"
 
-#define MIN_LINE_VAL (150)
+#define MIN_LINE_VAL (160)
 #define MAX_LINE_VAL (255)
-#define INCREMENT (1)
+// #define INCREMENT (1)
 
 int left_val;
 int right_val;

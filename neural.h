@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 #define INPUT_NODES (2)
 #define HIDDEN_NODES (3)
 #define OUTPUT_NODES (2)
@@ -155,7 +154,7 @@ motor_command_t transform_output(float output[OUTPUT_NODES]){
 }
 
 // Calculate square of average differnce between output and target
-float calculate_error(motor_command_t motors,  float output_layer_output[OUTPUT_NODES]){
+float calculate_loss(motor_command_t motors,  float output_layer_output[OUTPUT_NODES]){
     float target[OUTPUT_NODES];
     transform_motor_to_target(motors, target);
 

@@ -7,17 +7,19 @@
 
 #include "line_follow_pid.h"
 
-#define NUM_NETS 4
-#define MAX_EPOCHS (1000)
+#define NUM_NETS 6
+#define MAX_EPOCHS (20)
+
+#define ITER_TRAINING_RATE (10)
 
 int main(void)
 {
     motor_command_t motors;
 
     line_data_t line_data;
-    init_line_data_iter(1);
+    init_line_data_iter(ITER_TRAINING_RATE);
 
-    float learning_rate[NUM_NETS] = {0.003, 0.002, 0.001, 0.0005};
+    float learning_rate[NUM_NETS] = {0.5, 0.2, 0.1, 0.05, 0.02, 0.01};
     neural_net_t nets[NUM_NETS];
     net_outputs_t outputs;
 
@@ -28,7 +30,7 @@ int main(void)
 
         // print_net(net);
         // print_results(line_data, outputs.output, motors);
-        printf("Net: %d, learning rate: %5.4f\n", i, nets[i].learning_rate);
+        printf("\nNet: %d, learning rate: %5.4f\n", i, nets[i].learning_rate);
         print_error(0, motors, outputs);
     }
     for(int epoch = 0; epoch < MAX_EPOCHS; epoch++){
@@ -46,7 +48,7 @@ int main(void)
         // print_net(nets[i]);
         infer_net(line_data, nets[i], &outputs);
         // print_results(line_data, outputs.output, motors);
-        printf("Net: %d, learning rate: %5.4f\n", i, nets[i].learning_rate);
+        printf("\nNet: %d, learning rate: %5.4f\n", i, nets[i].learning_rate);
         print_error(MAX_EPOCHS, motors, outputs);
     }
     return 0;

@@ -3,7 +3,7 @@
 
 #include "defs.h"
 
-#define MIN_LINE_VAL (0)
+#define MIN_LINE_VAL (150)
 #define MAX_LINE_VAL (255)
 #define INCREMENT (1)
 

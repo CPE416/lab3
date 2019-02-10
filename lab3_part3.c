@@ -17,7 +17,7 @@
 #define MODE_3B 0
 
 #define DEAD_ZONE 200
-#define LEARNING_RATE 0.002
+#define LEARNING_RATE 0.02
 
 #define MODE_PROP 0
 #define MODE_NEURAL 1
@@ -188,4 +188,13 @@ void print_neural(int count){
     print_string("Neural");
     lcd_cursor(0, 1);
     print_num(count);
+}
+
+void print_training3(int count1, int count2){
+    clear_screen();
+    print_string("Training");
+    lcd_cursor(0, 1);
+    print_num(count1);
+    lcd_cursor(4, 1);
+    print_num(count2);
 }

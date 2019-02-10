@@ -14,14 +14,14 @@
 #define DELAY_MS 100 // Delay time for 
 #define DELAY_DATA_COLLECTION 50
 #define DELAY_TRAINING_INCREASE 10
-#define DELAY_NEURAL 200
+#define DELAY_NEURAL 10
 
 #define MODE_PROP 0
 #define MODE_DATA 1
 #define MODE_TRAINING 2 
 #define MODE_NEURAL 3
 
-#define LEARNING_RATE 0.02
+#define LEARNING_RATE 0.1
 
 #define CACHE_SIZE 500
 
@@ -30,6 +30,7 @@ void print_data(line_data_t sensor, int count);
 void print_training(int count);
 void print_training2(int count);
 void print_training3(int count1, int count2);
+void print_training4(int count1, int count2);
 
 int main(void)
 {
@@ -147,8 +148,9 @@ int main(void)
                 motors = compute_neural_network(line_data, net);
                 set_motors(motors);
 
+                print_training4(motors.left, motors.right);
                 // Loop Delay
-                delay_ms(DELAY_NEURAL);
+                // delay_ms(DELAY_NEURAL);
 
                 break;
             default:
@@ -240,3 +242,11 @@ void print_training3(int count1, int count2){
     print_num(count2);
 }
 
+void print_training4(int count1, int count2){
+    clear_screen();
+    print_string("Neural");
+    lcd_cursor(0, 1);
+    print_num(count1);
+    lcd_cursor(4, 1);
+    print_num(count2);
+}

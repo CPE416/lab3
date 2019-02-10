@@ -13,7 +13,7 @@
 #define DELAY_MS 200 // Delay time for loop
 #define DELAY_LOOP 500
 
-#define LEARNING_RATE 0.1
+#define LEARNING_RATE 0.02
 
 #define MODE_PROP 0
 #define MODE_NEURAL 1
@@ -24,6 +24,7 @@ u08 map_light_to_motor(u08 data);
 u08 set_mode(u08 mode);
 void print_neural(int count);
 void print_prop(int count);
+void print_training4(int count1, int count2, int count3, int count4);
 
 
 int main(void)
@@ -34,6 +35,7 @@ int main(void)
     // Loop variables
     line_data_t line_data;
     motor_command_t motors;
+    motor_command_t motors1;
     int data_counter = 0;
 
     halt();
@@ -62,11 +64,11 @@ int main(void)
         mode = set_mode(mode);
 
         // Print Mode and training iteration count
-        if(mode == MODE_PROP){
-            print_prop(data_counter);
-        }else{
-            print_neural(data_counter);
-        }
+        // if(mode == MODE_PROP){
+        //     print_prop(data_counter);
+        // }else{
+        //     print_neural(data_counter);
+        // }
 
         // Read line data
         line_data = read_line_sensor();
@@ -84,14 +86,15 @@ int main(void)
                 set_motors(motors);
                 break;
             case MODE_NEURAL:   
-                net.learning_rate = 0;
-                motors = compute_neural_network(line_data, net);
-                set_motors(motors);
+                net.learning_rate = 0.0005;
+                motors1 = compute_neural_network(line_data, net);
+                set_motors(motors1);
                 break;
         }
+        print_training4(motors.left, motors.right, motors1.left, motors1.right);
 
         // Delay
-        // delay_us(DELAY_LOOP);
+        delay_us(DELAY_LOOP);
     }
     return 1;
 }
@@ -146,3 +149,16 @@ void print_training3(int count1, int count2){
     lcd_cursor(4, 1);
     print_num(count2);
 }
+
+void print_training4(int count1, int count2, int count3, int count4){
+    clear_screen();
+    lcd_cursor(0, 0);
+    print_num(count1);
+    lcd_cursor(4, 0);
+    print_num(count2);
+    lcd_cursor(0, 1);
+    print_num(count3);
+    lcd_cursor(4, 1);
+    print_num(count4);
+}
+

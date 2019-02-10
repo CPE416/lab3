@@ -8,11 +8,11 @@
 #include "line_follow_pid.h"
 
 
-#define LEARNING_RATE (0.1)
+#define LEARNING_RATE (0.01)
 
-#define MAX_EPOCHS (20)
-#define EPOCH_PRINT_INTERVAL (2)
-#define ITER_TRAINING_RATE (1)
+#define MAX_EPOCHS (10000)
+#define EPOCH_PRINT_INTERVAL (MAX_EPOCHS / 10)
+#define ITER_TRAINING_RATE (10)
 #define ITER_PRINTING_RATE (50)
 
 

@@ -8,7 +8,7 @@
 #include "line_follow_pid.h"
 
 #define NUM_NETS 6
-#define MAX_EPOCHS (20)
+#define MAX_EPOCHS (100)
 
 #define ITER_TRAINING_RATE (10)
 

@@ -5,26 +5,29 @@
 #include <stdlib.h>
 #include <time.h>
 
+
+#define NODES 833
+
 #define INPUT_NODES (2)
-#define HIDDEN_NODES (3)
-#define OUTPUT_NODES (2)
+#define HIDDEN_NODES (NODES)
+#define OUTPUT_NODES (NODES)
 #define RAND_SEED (time(NULL))
 
 #define INITIAL_WEIGHT ((2.0 *  rand()) / RAND_MAX)
 #define INITIAL_BIAS ((2.0 * rand()) / RAND_MAX)
 
 typedef struct {
-    u08 size;
+    int size;
 }input_layer_t;
 
 typedef struct {
-    u08 size;
+    int size;
     float bias[HIDDEN_NODES];
     float weights[HIDDEN_NODES][INPUT_NODES];
 }hidden_layer_t;
 
 typedef struct {
-    u08 size;
+    int size;
     float bias[OUTPUT_NODES];
     float weights[OUTPUT_NODES][HIDDEN_NODES];
 }output_layer_t;
@@ -88,7 +91,7 @@ float sigmoid(float x){
 // output should be of size INPUT_NODES
 void infer_input_layer(float *input, neural_net_t net, float *output){
     // Input layer loop
-    for(u08 index = 0; index < net.input_layer.size; index++){
+    for(int index = 0; index < net.input_layer.size; index++){
         // Does no calculations, only places inputs in output 
         output[index] = input[index];
     }
@@ -97,10 +100,10 @@ void infer_input_layer(float *input, neural_net_t net, float *output){
 // Infers the output of a hidden layer
 void infer_hidden_layer(float *input, neural_net_t net, float *output){
     // Hidden layer loop
-    for(u08 hidden_index = 0; hidden_index < net.hidden_layer.size; hidden_index++){
+    for(int hidden_index = 0; hidden_index < net.hidden_layer.size; hidden_index++){
         float node_output = 0 - net.hidden_layer.bias[hidden_index];
         // Input layer Loop
-        for(u08 input_index = 0; input_index < net.input_layer.size; input_index++){
+        for(int input_index = 0; input_index < net.input_layer.size; input_index++){
             float weight = net.hidden_layer.weights[hidden_index][input_index];
             node_output += (input[input_index] * weight);
         }
@@ -111,10 +114,10 @@ void infer_hidden_layer(float *input, neural_net_t net, float *output){
 // Infers the output of an output layer
 void infer_output_layer(float *input, neural_net_t net, float *output){
     // Output layer loop
-    for(u08 output_index = 0; output_index < net.output_layer.size; output_index++){
+    for(int output_index = 0; output_index < net.output_layer.size; output_index++){
         float node_output = 0 - net.output_layer.bias[output_index];
         // Hidden Layer Weight Loop
-        for (u08 hidden_index = 0; hidden_index < net.hidden_layer.size; hidden_index++){
+        for (int hidden_index = 0; hidden_index < net.hidden_layer.size; hidden_index++){
             float weight = net.output_layer.weights[output_index][hidden_index];
             node_output += (input[hidden_index] * weight);
         }
@@ -159,7 +162,7 @@ float calculate_loss(motor_command_t motors,  float output_layer_output[OUTPUT_N
     transform_motor_to_target(motors, target);
 
     float error = 0;
-    for (u08 i = 0; i < OUTPUT_NODES; i++){
+    for (int i = 0; i < OUTPUT_NODES; i++){
         error += pow2(target[i] - output_layer_output[i]);
     }
     return error * 0.5;
@@ -167,11 +170,11 @@ float calculate_loss(motor_command_t motors,  float output_layer_output[OUTPUT_N
 
 void copy_hidden_weights(hidden_layer_t new_layer, neural_net_t *net){
     // Hidden layer loop
-    for(u08 hidden_index = 0; hidden_index < net->hidden_layer.size; hidden_index ++){
+    for(int hidden_index = 0; hidden_index < net->hidden_layer.size; hidden_index ++){
         net->hidden_layer.bias[hidden_index] = new_layer.bias[hidden_index];
 
         // Input layer loop
-        for(u08 input_index = 0; input_index < net->input_layer.size; input_index ++){
+        for(int input_index = 0; input_index < net->input_layer.size; input_index ++){
             net->hidden_layer.weights[hidden_index][input_index] = new_layer.weights[hidden_index][input_index];
         }
     }
@@ -179,11 +182,11 @@ void copy_hidden_weights(hidden_layer_t new_layer, neural_net_t *net){
 
 void copy_output_weights(output_layer_t new_layer, neural_net_t *net){
     // Output layer loop
-    for(u08 output_index = 0; output_index < net->hidden_layer.size; output_index ++){
+    for(int output_index = 0; output_index < net->hidden_layer.size; output_index ++){
         net->output_layer.bias[output_index] = new_layer.bias[output_index];
 
         // Hidden layer loop
-        for(u08 hidden_index = 0; hidden_index < net->hidden_layer.size; hidden_index ++){
+        for(int hidden_index = 0; hidden_index < net->hidden_layer.size; hidden_index ++){
             net->output_layer.weights[output_index][hidden_index] = new_layer.weights[output_index][hidden_index];
         }
     }
@@ -191,7 +194,7 @@ void copy_output_weights(output_layer_t new_layer, neural_net_t *net){
 
 void train_output_layer(net_outputs_t outputs, neural_net_t net, float *target, training_data_t *training_data){
     // Output layer loop
-    for(u08 output_index = 0; output_index < net.output_layer.size; output_index++){
+    for(int output_index = 0; output_index < net.output_layer.size; output_index++){
         float out_min_target = outputs.output[output_index] - target[output_index]; // d Error / d out k
         float out_prime = outputs.output[output_index] * (1 - outputs.output[output_index]); // d out k / d net k
         float node_delta = out_min_target * out_prime; // node delta = dE/doutk * doutk/dnetk
@@ -202,7 +205,7 @@ void train_output_layer(net_outputs_t outputs, neural_net_t net, float *target, 
         float new_bias = old_bias - (net.learning_rate * node_delta * -1.0);
         training_data->new_output_layer.bias[output_index] = new_bias;
         // Hidden layer loop
-        for (u08 hidden_index = 0; hidden_index < net.hidden_layer.size; hidden_index++){
+        for (int hidden_index = 0; hidden_index < net.hidden_layer.size; hidden_index++){
             float hidden_out = outputs.hidden[hidden_index];
             float old_weight = net.output_layer.weights[output_index][hidden_index];
 
@@ -214,12 +217,12 @@ void train_output_layer(net_outputs_t outputs, neural_net_t net, float *target, 
 
 void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, training_data_t *training_data){
     // Hidden layer loop
-    for(u08 hidden_index = 0; hidden_index < net.hidden_layer.size; hidden_index++){
+    for(int hidden_index = 0; hidden_index < net.hidden_layer.size; hidden_index++){
         float node_output = outputs.hidden[hidden_index];
 
         float accumulator = 0;  // Sum of weights coming out
         // Output layer loop
-        for (u08 output_index = 0; output_index < net.output_layer.size; output_index++){
+        for (int output_index = 0; output_index < net.output_layer.size; output_index++){
             float out_node_weight = net.output_layer.weights[output_index][hidden_index];
             float out_node_delta = training_data->output_node_delta[output_index];
 
@@ -236,7 +239,7 @@ void train_hidden_layer(net_outputs_t outputs, neural_net_t net, float *target, 
         training_data->new_hidden_layer.bias[hidden_index] = new_bias;
 
         // Input layer loop to calculate hidden weights
-        for (u08 input_index = 0; input_index < net.input_layer.size; input_index++){
+        for (int input_index = 0; input_index < net.input_layer.size; input_index++){
             float input = outputs.input[input_index]; 
             float old_weight = net.hidden_layer.weights[hidden_index][input_index];
 

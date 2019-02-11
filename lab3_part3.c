@@ -13,7 +13,7 @@
 #define DELAY_MS 200 // Delay time for loop
 #define DELAY_LOOP 500
 
-#define LEARNING_RATE 0.02
+#define LEARNING_RATE 0.8
 
 #define MODE_PROP 0
 #define MODE_NEURAL 1
@@ -94,7 +94,7 @@ int main(void)
         print_training4(motors.left, motors.right, motors1.left, motors1.right);
 
         // Delay
-        delay_us(DELAY_LOOP);
+        // delay_us(DELAY_LOOP);
     }
     return 1;
 }

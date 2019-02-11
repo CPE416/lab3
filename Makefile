@@ -97,6 +97,7 @@ net: clean
 	gcc $(CFLAGS) -g -o test_net test_net.c -lm
 	gcc $(CFLAGS) -g -o test_output test_output.c -lm
 	gcc $(CFLAGS) -g -o test_net_array test_net_array.c -lm 
+	gcc $(CFLAGS) -Wall -flto -O3 -pipe -std=c99 -pedantic -o compare_net compare_net.c -lm
 
 run_net: net
 	time ./test_net
@@ -126,3 +127,10 @@ valgrind: net
 handin: $(HANDIN_FILES)
 	handin jseng CPE416_lab3 $(HANDIN_FILES)
 	handin jseng CPE416_lab3
+
+time: net
+	time ./compare_net > net.txt
+	time ./neural-rs > neur.txt
+
+time_diff: time
+	diff net.txt neur.txt 

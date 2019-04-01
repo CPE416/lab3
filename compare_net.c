@@ -15,7 +15,7 @@
 #define ITER_TRAINING_RATE (10)
 #define ITER_PRINTING_RATE (50)
 
-#define INFERENCE_ITERATIONS (10000)
+#define INFERENCE_ITERATIONS (1000)
 
 int main()
 {
@@ -27,13 +27,13 @@ int main()
     line_data.right = 252;
 
     // Create and init network
-    neural_net_t net;
-    init_net(&net, LEARNING_RATE);
+    neural_net_t *net = (neural_net_t *) malloc(sizeof(neural_net_t));
+    init_net(net, LEARNING_RATE);
 
     // Create outputs and 
     net_outputs_t outputs;
     for (int i = 0; i < INFERENCE_ITERATIONS; i++){
-        infer_net(line_data, net, &outputs);
+        infer_net(line_data, *net, &outputs);
     }
 
     for (int i = 0; i < HIDDEN_NODES; i++){

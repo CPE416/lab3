@@ -56,7 +56,7 @@ program_linux: main.elf
 
 clean:
 	rm -fr *.elf *.hex *.o
-	rm -f dev.txt net_test net_test.txt
+	rm -f test_net compare_net *.txt
 
 # New stuff
 
@@ -97,7 +97,7 @@ net: clean
 	gcc $(CFLAGS) -g -o test_net test_net.c -lm
 	gcc $(CFLAGS) -g -o test_output test_output.c -lm
 	gcc $(CFLAGS) -g -o test_net_array test_net_array.c -lm 
-	gcc $(CFLAGS) -Wall -flto -O3 -pipe -std=c99 -pedantic -o compare_net compare_net.c -lm
+	gcc $(CFLAGS) -g -Wall -flto -O3 -pipe -std=c99 -pedantic -o compare_net compare_net.c -lm
 
 run_net: net
 	time ./test_net
@@ -121,7 +121,7 @@ find_usb:
 	ls /dev | diff - dev.txt
 
 valgrind: net
-	valgrind --track-origins=yes --leak-check=full ./test_output 
+	valgrind --track-origins=yes --leak-check=full ./compare_net 
 
 # Handin for use on the Unix servers
 handin: $(HANDIN_FILES)
